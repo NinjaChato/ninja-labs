@@ -9,13 +9,32 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage: 'inicio'
     };
 
-    // --- MODO FANTASMA (CORRIGIDO: MÉTODO IFRAME) ---
+    // --- FUNÇÕES DE NAVEGAÇÃO INTERNA (PROXY) ---
+    const handleBrowserNavigate = (e) => {
+        e.preventDefault();
+        const input = document.getElementById('browser-url-input');
+        const iframe = document.getElementById('proxy-frame');
+        let url = input.value.trim();
+
+        if (!url) return;
+
+        // Se não parece um site, pesquisa no Google
+        if (!url.includes('.') || url.includes(' ')) {
+            url = `https://www.google.com/search?q=${encodeURIComponent(url)}&igu=1`;
+        } else {
+            if (!url.startsWith('http')) url = 'https://' + url;
+            // Google Translate como proxy
+            url = `https://translate.google.com/translate?sl=auto&tl=pt&u=${encodeURIComponent(url)}`;
+        }
+        iframe.src = url;
+    };
+
+    // --- MODO FANTASMA ---
     const openCloaked = () => {
         const win = window.open('about:blank', '_blank');
         if (!win) return alert('Por favor, permita pop-ups para ativar o Modo Fantasma!');
         
         const url = window.location.href;
-
         const doc = win.document;
         doc.open();
         doc.write(`
@@ -24,14 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <head>
                 <title>Google Drive</title>
                 <link rel="icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png">
-                <style>
-                    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; }
-                    iframe { border: none; width: 100%; height: 100%; display: block; }
-                </style>
+                <style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}iframe{border:none;width:100%;height:100%;display:block;}</style>
             </head>
-            <body>
-                <iframe src="${url}" allowfullscreen></iframe>
-            </body>
+            <body><iframe src="${url}" allowfullscreen></iframe></body>
             </html>
         `);
         doc.close();
@@ -68,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button id="cloak-btn" class="discord-btn" title="Modo Fantasma (about:blank)">
                             <i class="fas fa-mask"></i>
                         </button>
-                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Junte-se à nossa comunidade no Discord!">
+                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Discord">
                             <i class="fab fa-discord"></i>
                         </a>
                     </div>
@@ -98,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item.type === 'proxy') {
             actionButtonsHTML = `<button class="card-action-btn open-proxy-btn" data-url="${item.proxyUrl}">Abrir Navegador <i class="fas fa-globe"></i></button>`;
         } else if (item.type === 'script') {
-            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script para colar no campo de URL de um novo favorito.">Copiar Script <i class="fas fa-copy"></i></button>`;
+            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script.">Copiar Script <i class="fas fa-copy"></i></button>`;
         } else if (item.downloadLink && item.alternativeLink) {
             actionButtonsHTML = `
                 <div class="card-action-group">
@@ -239,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const init = async () => {
         document.body.addEventListener('click', (e) => {
-            // 1. Navegação
             const navBtn = e.target.closest('.nav-btn');
             if (navBtn) {
                 e.preventDefault();
@@ -250,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 2. Copiar Script
             const copyBtn = e.target.closest('.copy-script-btn');
             if (copyBtn) {
                 const script = copyBtn.dataset.script;
@@ -266,13 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 3. Modo Fantasma (USANDO NOVA LÓGICA IFRAME)
-            if (e.target.closest('#cloak-btn')) {
-                openCloaked();
-                return;
-            }
+            // MODO FANTASMA
+            if (e.target.closest('#cloak-btn')) { openCloaked(); return; }
 
-            // 4. Abrir Proxy Modal
+            // ABRIR PROXY
             const proxyBtn = e.target.closest('.open-proxy-btn');
             if (proxyBtn) {
                 const url = proxyBtn.dataset.url;
@@ -285,11 +294,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 5. Fechar Proxy
+            // FECHAR PROXY
             if (e.target.closest('#close-browser')) {
                 document.getElementById('browser-modal').classList.remove('active');
                 document.getElementById('proxy-frame').src = '';
                 return;
+            }
+        });
+
+        // FORMULÁRIO DO NAVEGADOR
+        document.body.addEventListener('submit', (e) => {
+            if (e.target.id === 'browser-form') {
+                handleBrowserNavigate(e);
             }
         });
 
