@@ -1,0 +1,254 @@
+{
+  "pcGames": [
+    {
+      "title": "Assassin's Creed II",
+      "description": "Na pele de Ezio Auditore, um nobre da Renascença Italiana, busque vingança e descubra os segredos da antiga guerra entre Assassinos e Templários. Um jogo aclamado por sua história, personagem e ambientação.",
+      "icon": "fab fa-assassins-creed",
+      "downloadLink": "https://buzzheavier.com/7m35lpl1e1od",
+      "featured": true
+    },
+    {
+      "title": "BioShock",
+      "description": "Explore a cidade subaquática e distópica de Rapture. Um jogo de tiro em primeira pessoa com uma narrativa profunda e atmosfera única, onde você usa armas e poderes genéticos para sobreviver.",
+      "icon": "fas fa-water",
+      "downloadLink": "https://buzzheavier.com/071u3qoaaqgh"
+    },
+    {
+      "title": "Five Nights at Freddy's",
+      "description": "O jogo que deu início ao fenômeno de terror. Como um guarda de segurança noturno, você deve sobreviver cinco noites em uma pizzaria, monitorando câmeras e gerenciando energia para se proteger dos animatrônicos assombrados.",
+      "icon": "fas fa-camera-retro",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys.exe"
+    },
+    {
+      "title": "Five Nights at Freddy's 2",
+      "description": "A sequência expande o terror com novos animatrônicos e mecânicas. Sem portas para se proteger, você deve usar uma máscara de Freddy Fazbear e uma lanterna para manter as criaturas à distância.",
+      "icon": "fas fa-camera-retro",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys2.exe"
+    },
+    {
+      "title": "Five Nights at Freddy's 3",
+      "description": "Ambientado trinta anos após os eventos do primeiro jogo, você trabalha em uma atração de terror baseada na lenda da pizzaria. Com apenas um animatrônico real, Springtrap, você deve gerenciar sistemas de áudio e ventilação para sobreviver.",
+      "icon": "fas fa-camera-retro",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys3.exe"
+    },
+    {
+      "title": "Five Nights at Freddy's 4",
+      "description": "O terror chega em casa. Jogue como uma criança que deve se defender dos animatrônicos monstruosos que assombram seu quarto. Use apenas uma lanterna e seus ouvidos para sobreviver até o amanhecer.",
+      "icon": "fas fa-camera-retro",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys4.exe"
+    },
+    {
+      "title": "FNAF 4 (Halloween Edition)",
+      "description": "Uma atualização não-canônica para o FNAF 4 que substitui os animatrônicos Nightmare por novas versões temáticas de Halloween, como Jack-O-Bonnie e Nightmare Mangle, oferecendo um novo desafio visual.",
+      "icon": "fas fa-pumpkin",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/HalloweenEdition.exe"
+    },
+    {
+      "title": "Five Nights at Freddy's: Sister Location",
+      "description": "Trabalhe como um técnico noturno em uma instalação de entretenimento e aluguel de animatrônicos. Este jogo muda a fórmula, com diferentes tarefas e locais a cada noite, aprofundando a misteriosa história da franquia.",
+      "icon": "fas fa-clown",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/SisterLocation.exe"
+    },
+    {
+      "title": "FNaF World",
+      "description": "Um spin-off que troca o terror por um RPG de fantasia. Monte uma equipe com versões fofas dos personagens de FNAF e explore um mundo colorido para derrotar inimigos em batalhas por turnos.",
+      "icon": "fas fa-heart",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/FNaF_World.exe"
+    },
+    {
+      "title": "Freddy Fazbear's Pizzeria Simulator",
+      "description": "Começando como um simulador de gerenciamento onde você projeta e administra sua própria pizzaria, o jogo rapidamente revela sua verdadeira natureza de terror, combinando tarefas diurnas com a sobrevivência noturna no escritório.",
+      "icon": "fas fa-pizza-slice",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/PizzeriaSimulator.exe"
+    },
+    {
+      "title": "Grand Theft Auto: San Andreas",
+      "description": "Um marco dos jogos de mundo aberto. Jogue como Carl 'CJ' Johnson, que retorna à sua cidade natal e é arrastado de volta para uma vida de gangues, corrupção e aventura em um enorme estado fictício.",
+      "icon": "fas fa-car-side",
+      "downloadLink": "https://buzzheavier.com/798s0sck9y6i",
+      "featured": true
+    },
+    {
+      "title": "Half-Life",
+      "description": "O jogo que revolucionou o gênero de tiro em primeira pessoa. Como o cientista Gordon Freeman, você deve sobreviver a um experimento que deu errado e escapar de um complexo de pesquisa invadido por alienígenas.",
+      "icon": "fas fa-atom",
+      "downloadLink": "https://pixeldrain.com/u/cS3bCoyB"
+    },
+    {
+      "title": "Half-Life 2",
+      "description": "Continue a saga de Gordon Freeman em um futuro onde a Terra foi dominada por uma força alienígena. Com física avançada e uma narrativa envolvente, é considerado um dos melhores jogos de todos os tempos.",
+      "icon": "fas fa-atom",
+      "downloadLink": "#"
+    },
+    {
+      "title": "The Henry Stickmin Collection",
+      "description": "Uma coleção remasterizada dos clássicos jogos em Flash. É uma aventura interativa no estilo 'escolha seu caminho', onde cada decisão leva a resultados hilários e imprevisíveis, cheia de referências à cultura pop e múltiplos finais absurdos.",
+      "icon": "fas fa-gem",
+      "downloadLink": "https://buzzheavier.com/l5itgkjk88yg"
+    },
+    {
+      "title": "Hotline Miami",
+      "description": "Um jogo de ação 2D de alta octanagem, conhecido por sua violência brutal, trilha sonora eletrônica pulsante e estética neon dos anos 80. Exige reflexos rápidos e estratégia para superar cada nível desafiador.",
+      "icon": "fas fa-phone",
+      "downloadLink": "https://buzzheavier.com/cqzjq5yy197r"
+    },
+    {
+      "title": "Limbo",
+      "description": "Um jogo de plataforma e quebra-cabeça com um estilo visual sombrio e minimalista. Guie um garoto por um mundo perigoso e misterioso em busca de sua irmã, resolvendo desafios baseados em física para sobreviver.",
+      "icon": "fas fa-spider",
+      "downloadLink": "https://megadb.net/iczzlivay6pp"
+    },
+    {
+      "title": "Need For Speed: Hot Pursuit 2",
+      "description": "Um clássico jogo de corrida arcade focado em perseguições policiais intensas em alta velocidade. Escolha entre ser o piloto de fuga ou o policial e utilize táticas e atalhos para vencer. Para jogar, basta extrair a pasta e executar o arquivo '.Exe'.",
+      "icon": "fas fa-car-burst",
+      "downloadLink": "https://1fichier.com/?cxwhnowjsqre8f0eyemw"
+    },
+    {
+      "title": "Need For Speed: Underground",
+      "description": "Mergulhe no mundo das corridas de rua noturnas e da cultura de tuning. Este jogo revolucionou a franquia com sua profunda personalização de veículos e um modo carreira baseado em história. Para jogar, extraia o arquivo e execute 'Speed.exe'.",
+      "icon": "fas fa-road",
+      "downloadLink": "https://1fichier.com/?wg3v32cqoelm5x062dpw"
+    },
+    {
+      "title": "Need For Speed: Underground 2",
+      "description": "Explore uma cidade de mundo aberto enquanto compete em corridas de rua e aprimora seu carro com uma vasta gama de modificações visuais e de performance. É a evolução do seu antecessor, com mais liberdade e customização. Extraia o arquivo e execute 'Speed2.exe' para jogar.",
+      "icon": "fas fa-road-spikes",
+      "downloadLink": "https://1fichier.com/?bhc5plxo7tmj3vf3mfip"
+    },
+    {
+      "title": "Need For Speed: Most Wanted (2005)",
+      "description": "Combine a emoção das corridas de rua com perseguições policiais épicas. Seu objetivo é subir na 'Blacklist' dos pilotos mais procurados da cidade para recuperar seu carro e sua reputação. Extraia o arquivo e inicie pelo 'Speed.exe'.",
+      "icon": "fas fa-car-on-fire",
+      "downloadLink": "https://1fichier.com/?dvi1pehq13udj4l8c8yz",
+      "featured": true
+    },
+    {
+      "title": "Need For Speed: Carbon",
+      "description": "Domine a cidade conquistando territórios em perigosas corridas de canyon. Monte uma equipe, cada membro com habilidades únicas, e enfrente gangues rivais pelo controle das ruas. Extraia com a senha <strong>chemical</strong> e execute 'NFSC.exe'.",
+      "icon": "fas fa-moon",
+      "downloadLink": "https://1fichier.com/?idgjp4xj752dyikhp3iz"
+    },
+    {
+      "title": "Need For Speed: Prostreet",
+      "description": "Deixe as ruas ilegais e entre no mundo das competições de corrida profissionais em circuitos fechados. O jogo foca em realismo, com danos detalhados nos veículos e diferentes modos de corrida. Extraia com a senha <strong>chemical</strong> e execute 'NFS.exe' como administrador.",
+      "icon": "fas fa-flag-checkered",
+      "downloadLink": "https://1fichier.com/?pjxdlksbu4mhglud2xw6"
+    },
+    {
+      "title": "Need For Speed: Undercover",
+      "description": "Viva a vida de um policial infiltrado em um sindicato do crime internacional. Participe de corridas e missões de alto risco para desmantelar a organização por dentro. Extraia e execute 'NFS.exe' como administrador.",
+      "icon": "fas fa-user-secret",
+      "downloadLink": "https://1fichier.com/?g91q4qo2ngzynp66il38"
+    },
+    {
+      "title": "Need For Speed: Shift",
+      "description": "Uma abordagem de simulação de corrida, focando na experiência imersiva do piloto. Sinta a intensidade e a velocidade com uma visão realista do cockpit e física aprimorada. Após extrair, execute 'Shift.exe' como administrador.",
+      "icon": "fas fa-gauge-high",
+      "downloadLink": "https://1fichier.com/?75p7yro4qcc1jm50kn8w",
+      "alternativeLink": "https://1fichier.com/?gca9jafz6vnhzjfq45mz"
+    },
+    {
+      "title": "Need For Speed: The Run",
+      "description": "Participe de uma corrida ilegal de alto risco que cruza os Estados Unidos, de São Francisco a Nova York. A narrativa cinematográfica e os eventos de quick-time adicionam um toque de ação à jogabilidade. Extraia a pasta e execute o '.Exe'.",
+      "icon": "fas fa-road-bridge",
+      "downloadLink": "https://drive.google.com/drive/folders/1POPvzDqxHNTvqmZHQt79OKF8RXO9Yh-b?usp=sharing",
+      "alternativeLink": "https://1fichier.com/?qhpd1bg953pbjto2it3g"
+    },
+    {
+      "title": "Need For Speed: Shift 2 Unleashed",
+      "description": "A sequência do simulador de corrida, aprimorando ainda mais o realismo. Introduz a câmera no capacete para uma imersão total e corridas noturnas autênticas. Basta extrair e executar o '.Exe'.",
+      "icon": "fas fa-gauge-simple-high",
+      "downloadLink": "https://1fichier.com/?az4d96ptbm8qz0vu6478"
+    },
+    {
+      "title": "Portal",
+      "description": "Um inovador jogo de quebra-cabeça em primeira pessoa. Use uma arma que cria portais para resolver desafios complexos enquanto é guiado (e provocado) pela inteligência artificial GLaDOS.",
+      "icon": "fas fa-circle-dot",
+      "downloadLink": "https://buzzheavier.com/6klxm5xf3m3l"
+    },
+    {
+      "title": "Portal 2",
+      "description": "Expanda a jogabilidade do original com novos elementos de quebra-cabeça e uma campanha cooperativa. Explore novas áreas da Aperture Science e desvende mais segredos com um humor ainda mais afiado.",
+      "icon": "fas fa-circle-dot",
+      "downloadLink": "https://buzzheavier.com/jhbnag5ynrd9"
+    },
+    {
+      "title": "RimWorld",
+      "description": "Um simulador de colônia de ficção científica onde você gerencia sobreviventes em um planeta distante. Controlado por uma IA contadora de histórias, cada partida cria uma narrativa única sobre psicologia, ecologia, combate e muito mais.",
+      "icon": "fas fa-users",
+      "downloadLink": "https://gofile.io/d/MCgHda"
+    },
+    {
+      "title": "Ultimate Custom Night",
+      "description": "O mashup definitivo de Five Nights at Freddy's. Misture e combine 50 animatrônicos selecionáveis de toda a série, ajuste suas dificuldades e tente sobreviver a uma noite customizável com uma variedade de mecânicas para dominar.",
+      "icon": "fas fa-crown",
+      "downloadLink": "https://archive.org/download/fnaf1ucn/UltimateCustomNight.exe"
+    },
+    {
+      "title": "Undertale",
+      "description": "Um RPG único onde ninguém precisa morrer. Caia em um mundo de monstros e decida o destino de todos através de um sistema de batalha inovador, onde você pode lutar ou negociar sua saída dos conflitos.",
+      "icon": "fas fa-heart-crack",
+      "downloadLink": "https://buzzheavier.com/5zh07h6relk9"
+    }
+  ],
+  "browserGames": [
+    {
+      "title": "Jogo de Navegador (Exemplo)",
+      "description": "Adicione aqui a descrição do seu jogo de navegador.",
+      "icon": "fas fa-globe",
+      "gameUrl": "#"
+    }
+  ],
+  "emulatorGames": [
+    {
+      "title": "Jogo de Emulador (Exemplo)",
+      "description": "Não se esqueça de adicionar a ROM na pasta /roms e especificar o 'core' e o caminho em 'rom'.",
+      "icon": "fas fa-ghost",
+      "core": "snes9x",
+      "rom": "caminho/para/rom.sfc",
+      "featured": true
+    }
+  ],
+  "hacks": [
+    {
+      "title": "Matific",
+      "description": "Acesso a recursos avançados da plataforma de matemática Matific.",
+      "icon": "fas fa-calculator",
+      "accessLink": "https://matific.cupiditys.lol"
+    },
+    {
+      "title": "Speak",
+      "description": "Melhore suas habilidades de fala e pronúncia com esta ferramenta.",
+      "icon": "fas fa-microphone",
+      "accessLink": "https://speakify.cupiditys.lol"
+    },
+    {
+      "title": "Leia SP",
+      "description": "Recursos para a plataforma de leitura e estudo Leia SP.",
+      "icon": "fas fa-book-reader",
+      "accessLink": "https://leiasp.cupiditys.lol"
+    },
+    {
+      "title": "Redação Paulista",
+      "description": "Recurso para ajudar na criação de redações para a plataforma de ensino paulista.",
+      "icon": "fas fa-pen-nib",
+      "accessLink": "https://redacao.cupiditys.lol/"
+    },
+    {
+      "title": "Tarefa SP",
+      "description": "Ferramenta para auxiliar na resolução de tarefas da plataforma Tarefa SP.",
+      "icon": "fas fa-tasks",
+      "accessLink": "https://taskitos.cupiditys.lol/"
+    }
+  ],
+  "tools": [
+    {
+      "title": "Ferramenta (Exemplo)",
+      "description": "Adicione aqui a descrição da sua ferramenta.",
+      "icon": "fas fa-tools",
+      "downloadLink": "#",
+      "featured": true
+    }
+  ]
+}
