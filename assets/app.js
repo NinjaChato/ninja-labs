@@ -9,6 +9,31 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage: 'inicio'
     };
 
+    // --- FUNÇÕES DE CAMUFLAGEM (GHOST MODE) ---
+    const openCloaked = () => {
+        const win = window.open('about:blank', '_blank');
+        if (!win) return alert('Por favor, permita pop-ups para ativar o Modo Fantasma!');
+        
+        const doc = win.document;
+        const iframe = doc.createElement('iframe');
+        const style = doc.createElement('style');
+        const link = doc.createElement('link');
+
+        doc.title = "Google Drive";
+        link.rel = "icon";
+        link.href = "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
+        doc.head.appendChild(link);
+
+        style.textContent = `
+            body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+            iframe { border: none; width: 100%; height: 100%; display: block; }
+        `;
+        doc.head.appendChild(style);
+
+        iframe.src = window.location.href;
+        doc.body.appendChild(iframe);
+    };
+
     // --- TEMPLATES ---
 
     const createHeader = () => {
@@ -34,11 +59,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="header-top">
                     <div>
                         <h1 class="site-title">Ninja Labs</h1>
-                        <p class="site-description">Seu portal para jogos, ferramentas e recursos essenciais.</p>
+                        <p class="site-description">Acesso restrito, jogos e ferramentas.</p>
                     </div>
-                    <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Junte-se à nossa comunidade no Discord!">
-                        <i class="fab fa-discord"></i>
-                    </a>
+                    <div style="display:flex; gap:10px;">
+                        <button id="cloak-btn" class="discord-btn" title="Modo Fantasma">
+                            <i class="fas fa-mask"></i>
+                        </button>
+                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Discord">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
                 </div>
                 <div class="header-bottom">
                     <div class="search-wrapper">
@@ -54,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const createFooter = () => {
         return `
             <footer class="site-footer fade-in">
-                <p>Feito com <i class="fas fa-bolt"></i> por Ninja Labs &copy; 2025</p>
+                <p>Ninja Labs &copy; 2024</p>
             </footer>
         `;
     };
@@ -62,8 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const createCard = (item, index = 0) => {
         let actionButtonsHTML = '';
 
-        if (item.type === 'script') {
-            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script para colar no campo de URL de um novo favorito.">Copiar Script <i class="fas fa-copy"></i></button>`;
+        if (item.type === 'proxy') {
+            actionButtonsHTML = `<button class="card-action-btn open-proxy-btn" data-url="${item.proxyUrl}">Abrir Navegador <i class="fas fa-globe"></i></button>`;
+        } else if (item.type === 'script') {
+            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script bookmarklet.">Copiar Script <i class="fas fa-copy"></i></button>`;
         } else if (item.downloadLink && item.alternativeLink) {
             actionButtonsHTML = `
                 <div class="card-action-group">
@@ -95,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-actions-wrapper">${actionButtonsHTML}</div>
             </div>`;
     };
-
+    
     const createHomePage = () => {
         const allItems = Object.values(DB).flat();
         const featuredItems = allItems.filter(item => item.featured);
@@ -107,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <main class="fade-in">
                 <section class="hero-section">
                     <h2 class="hero-title">Acesso Direto ao Essencial</h2>
-                    <p class="hero-subtitle">Navegue por uma seleção curada de jogos, ferramentas e recursos, sem distrações e com links diretos.</p>
+                    <p class="hero-subtitle">Navegue por uma seleção curada de jogos, ferramentas e recursos.</p>
                     <a href="#pcGames" data-page="pcGames" class="hero-cta nav-btn">Explorar Conteúdo</a>
                 </section>
                 <section class="featured-section">${featuredHTML}</section>
@@ -116,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createCategoryPage = (categoryKey, title) => {
         const items = DB[categoryKey] || [];
-
+        
         let creditsHTML = '';
         if (categoryKey === 'pcGames') {
             creditsHTML = `<p class="section-credits">Conteúdo fornecido por <a href="https://steamrip.com" target="_blank" class="credit-highlight">SteamRIP.com</a> e <a href="https://archive.org" target="_blank" class="credit-highlight">Archive.org</a></p>`;
@@ -127,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (items.length === 0) {
             return `<main class="fade-in"><h2 class="section-title">${title}</h2>${creditsHTML}<p class="text-center" style="color:var(--text-secondary)">Nenhum item adicionado a esta categoria ainda.</p></main>`;
         }
-
+        
         const cardsHTML = items.map((item, index) => createCard(item, index)).join('');
         return `
             <main>
@@ -142,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </main>`;
     };
 
-    // --- LÓGICA ---
+    // --- LÓGICA DE EVENTOS ---
 
     const handleSearch = () => {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -186,15 +218,15 @@ document.addEventListener('DOMContentLoaded', () => {
             : createCategoryPage(state.currentPage, pageTitles[state.currentPage] || 'Página');
 
         appContainer.innerHTML = `<div class="app-wrapper">${createHeader()}${pageContentHTML}${createFooter()}</div>`;
-
+        
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('keyup', debounce(handleSearch, 300));
         }
-
+        
         window.scrollTo(0, 0);
     };
-
+    
     const router = () => {
         const hash = window.location.hash.substring(1);
         const validPages = ['inicio', 'pcGames', 'browserGames', 'emulatorGames', 'hacks', 'tools'];
@@ -202,10 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
     };
 
-    // --- INICIALIZAÇÃO ---
-
     const init = async () => {
         document.body.addEventListener('click', (e) => {
+            // 1. Navegação
             const navBtn = e.target.closest('.nav-btn');
             if (navBtn) {
                 e.preventDefault();
@@ -216,6 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // 2. Copiar Script
             const copyBtn = e.target.closest('.copy-script-btn');
             if (copyBtn) {
                 const script = copyBtn.dataset.script;
@@ -230,17 +262,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 return;
             }
-        });
 
-        document.body.addEventListener('mousemove', (e) => {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
+            // 3. Modo Fantasma
+            if (e.target.closest('#cloak-btn')) {
+                openCloaked();
+                return;
+            }
+
+            // 4. Abrir Proxy Modal
+            const proxyBtn = e.target.closest('.open-proxy-btn');
+            if (proxyBtn) {
+                const url = proxyBtn.dataset.url;
+                const modal = document.getElementById('browser-modal');
+                const iframe = document.getElementById('proxy-frame');
+                if (modal && iframe) {
+                    iframe.src = url;
+                    modal.classList.add('active');
+                }
+                return;
+            }
+
+            // 5. Fechar Proxy
+            if (e.target.closest('#close-browser')) {
+                document.getElementById('browser-modal').classList.remove('active');
+                document.getElementById('proxy-frame').src = '';
+                return;
+            }
         });
 
         if (backToTopBtn) {
@@ -248,7 +295,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (window.scrollY > 300) backToTopBtn.classList.add('visible');
                 else backToTopBtn.classList.remove('visible');
             });
-
             backToTopBtn.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
@@ -262,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
             DB = await response.json();
             router();
         } catch (error) {
-            appContainer.innerHTML = `<p style="color:red; text-align:center;">Falha ao carregar o banco de dados do site: ${error.message}</p>`;
+            appContainer.innerHTML = `<p style="color:red; text-align:center;">Falha ao carregar dados.</p>`;
         } finally {
             if (loader) {
                 loader.style.opacity = '0';
