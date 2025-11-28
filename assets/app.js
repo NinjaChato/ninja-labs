@@ -9,29 +9,32 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage: 'inicio'
     };
 
-    // --- FUNÇÕES DE CAMUFLAGEM (GHOST MODE) ---
+    // --- MODO FANTASMA (CORRIGIDO: MÉTODO IFRAME) ---
     const openCloaked = () => {
         const win = window.open('about:blank', '_blank');
         if (!win) return alert('Por favor, permita pop-ups para ativar o Modo Fantasma!');
         
+        const url = window.location.href;
+
         const doc = win.document;
-        const iframe = doc.createElement('iframe');
-        const style = doc.createElement('style');
-        const link = doc.createElement('link');
-
-        doc.title = "Google Drive";
-        link.rel = "icon";
-        link.href = "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
-        doc.head.appendChild(link);
-
-        style.textContent = `
-            body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
-            iframe { border: none; width: 100%; height: 100%; display: block; }
-        `;
-        doc.head.appendChild(style);
-
-        iframe.src = window.location.href;
-        doc.body.appendChild(iframe);
+        doc.open();
+        doc.write(`
+            <!DOCTYPE html>
+            <html style="margin:0;padding:0;width:100%;height:100%;">
+            <head>
+                <title>Google Drive</title>
+                <link rel="icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png">
+                <style>
+                    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; }
+                    iframe { border: none; width: 100%; height: 100%; display: block; }
+                </style>
+            </head>
+            <body>
+                <iframe src="${url}" allowfullscreen></iframe>
+            </body>
+            </html>
+        `);
+        doc.close();
     };
 
     // --- TEMPLATES ---
@@ -62,10 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="site-description">Acesso restrito, jogos e ferramentas.</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button id="cloak-btn" class="discord-btn" title="Modo Fantasma">
+                        <button id="cloak-btn" class="discord-btn" title="Modo Fantasma (about:blank)">
                             <i class="fas fa-mask"></i>
                         </button>
-                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Discord">
+                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Junte-se à nossa comunidade no Discord!">
                             <i class="fab fa-discord"></i>
                         </a>
                     </div>
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item.type === 'proxy') {
             actionButtonsHTML = `<button class="card-action-btn open-proxy-btn" data-url="${item.proxyUrl}">Abrir Navegador <i class="fas fa-globe"></i></button>`;
         } else if (item.type === 'script') {
-            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script bookmarklet.">Copiar Script <i class="fas fa-copy"></i></button>`;
+            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script para colar no campo de URL de um novo favorito.">Copiar Script <i class="fas fa-copy"></i></button>`;
         } else if (item.downloadLink && item.alternativeLink) {
             actionButtonsHTML = `
                 <div class="card-action-group">
@@ -263,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 3. Modo Fantasma
+            // 3. Modo Fantasma (USANDO NOVA LÓGICA IFRAME)
             if (e.target.closest('#cloak-btn')) {
                 openCloaked();
                 return;
@@ -295,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (window.scrollY > 300) backToTopBtn.classList.add('visible');
                 else backToTopBtn.classList.remove('visible');
             });
+            
             backToTopBtn.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
