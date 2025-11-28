@@ -23,6 +23,22 @@
     
     <div id="app-container"></div>
 
+    <!-- MODAL NAVEGADOR NINJA (PROXY) -->
+    <div id="browser-modal" class="modal-overlay">
+        <div class="browser-window glass-effect">
+            <div class="browser-toolbar">
+                <div class="browser-actions">
+                    <button id="close-browser" title="Fechar"><i class="fas fa-times"></i></button>
+                    <span class="browser-title">Navegador Seguro</span>
+                </div>
+            </div>
+            <div class="browser-content">
+                <iframe id="proxy-frame" src="" allowfullscreen referrerpolicy="no-referrer"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Voltar ao Topo -->
     <button id="back-to-top" aria-label="Voltar ao topo">
         <i class="fas fa-arrow-up"></i>
     </button>
