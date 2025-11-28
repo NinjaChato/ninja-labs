@@ -194,20 +194,37 @@
   ],
   "browserGames": [
     {
-      "title": "Jogo de Navegador (Exemplo)",
-      "description": "Adicione aqui a descrição do seu jogo de navegador.",
-      "icon": "fas fa-globe",
-      "gameUrl": "#"
+      "title": "Minecraft Classic",
+      "description": "A versão oficial e gratuita do Minecraft lançada pela Mojang. Construa livremente.",
+      "icon": "fas fa-cube",
+      "gameUrl": "https://classic.minecraft.net/"
+    },
+    {
+      "title": "Doom (1993)",
+      "description": "O pai dos jogos de tiro (FPS). Jogue a versão completa do clássico via DOSBox.",
+      "icon": "fas fa-gun",
+      "gameUrl": "https://dos.zone/doom-dec-1993/"
+    },
+    {
+      "title": "Slope",
+      "description": "Jogo de reflexos rápidos onde você guia uma bola por uma cidade neon infinita.",
+      "icon": "fas fa-bowling-ball",
+      "gameUrl": "https://kbhgames.com/game/slope"
+    },
+    {
+      "title": "2048",
+      "description": "O clássico quebra-cabeça matemático. Junte os números até chegar em 2048.",
+      "icon": "fas fa-border-all",
+      "gameUrl": "https://play2048.co/"
     }
   ],
   "emulatorGames": [
     {
-      "title": "Jogo de Emulador (Exemplo)",
-      "description": "Não se esqueça de adicionar a ROM na pasta /roms e especificar o 'core' e o caminho em 'rom'.",
-      "icon": "fas fa-ghost",
+      "title": "Super Mario World (Exemplo)",
+      "description": "Explore a Terra dos Dinossauros com Mario. Requer ROM na pasta correta.",
+      "icon": "fas fa-dragon",
       "core": "snes9x",
-      "rom": "caminho/para/rom.sfc",
-      "featured": true
+      "rom": "supermario.sfc"
     }
   ],
   "hacks": [
@@ -244,8 +261,8 @@
   ],
   "tools": [
     {
-      "title": "Navegador Web (Canlite)",
-      "description": "Navegue na internet através de um proxy rápido e direto. Ideal para desbloquear sites.",
+      "title": "Navegador Ninja",
+      "description": "Navegue na internet através de um navegador embutido. Ideal para desbloquear sites.",
       "icon": "fas fa-globe-americas",
       "type": "proxy",
       "proxyUrl": "https://canlite.org",
