@@ -2,7 +2,7 @@
   --background: #050505;
   --surface: #0f0f0f;
   --surface-hover: #161616;
-  --glass: rgba(10, 10, 10, 0.8);
+  --glass: rgba(10, 10, 10, 0.85);
   --text-primary: #ffffff;
   --text-secondary: #9ca3af;
   --border-color: rgba(255, 255, 255, 0.08);
@@ -80,7 +80,7 @@ body {
   width: 44px; height: 44px; border-radius: 12px;
   background: rgba(255,255,255,0.03); color: var(--text-secondary);
   font-size: 1.2rem; text-decoration: none; border: 1px solid var(--border-color);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; border:none;
 }
 .discord-btn:hover {
   background: var(--surface-hover); border-color: var(--accent); color: var(--accent);
@@ -182,7 +182,7 @@ body {
 .card-action-btn:not(.alt):hover { background: #fff; border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
 .card-action-btn.alt { background: transparent; }
 
-/* MODAL PROXY */
+/* MODAL NAVEGADOR NINJA */
 .modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000;
     display: flex; align-items: center; justify-content: center;
@@ -201,13 +201,27 @@ body {
     border-bottom: 1px solid var(--border-color);
     display: flex; align-items: center; padding: 0 1rem; gap: 1rem;
 }
-.browser-actions button {
-    background: #ff5f56; border: none; width: 14px; height: 14px;
-    border-radius: 50%; color: transparent; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all 0.2s;
+.browser-controls button, .browser-actions button {
+    background: transparent; border: none; color: var(--text-secondary);
+    font-size: 1.2rem; cursor: pointer; transition: color 0.2s;
+    width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
 }
-.browser-actions button:hover { color: rgba(0,0,0,0.6); transform: scale(1.1); }
-.browser-title { font-size: 0.9rem; color: var(--text-secondary); margin-left: 10px; font-weight: 600; }
+.browser-controls button:hover, .browser-actions button:hover {
+    background: rgba(255,255,255,0.1); color: #fff;
+}
+#close-browser:hover { background: #ff4757; color: white; }
+.browser-address-bar {
+    flex-grow: 1; background: #000; border-radius: 99px;
+    height: 36px; display: flex; align-items: center; padding: 0 1rem;
+    border: 1px solid var(--border-color);
+}
+.browser-address-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+.lock-icon { color: #2ecc71; font-size: 0.8rem; margin-right: 10px; }
+#browser-url-input {
+    background: transparent; border: none; color: white; width: 100%;
+    font-family: var(--font-body); font-size: 0.9rem; outline: none;
+}
+.browser-address-bar button { background: transparent; border: none; color: var(--accent); cursor: pointer; }
 .browser-content { flex-grow: 1; position: relative; background: #fff; }
 .browser-content iframe { width: 100%; height: 100%; border: none; display: block; }
 
