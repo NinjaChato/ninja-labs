@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jogando... | Ninja Labs</title>
+    <!-- Ícone para voltar (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: sans-serif;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Botão Flutuante de Voltar */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #00f6ff;
+            color: #000;
+            border-color: #00f6ff;
+            box-shadow: 0 0 15px rgba(0, 246, 255, 0.4);
+        }
+
+        /* Mensagem de Erro/Carregando */
+        .status-msg {
+            color: #a0a0a0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botão para voltar para a Home -->
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+
+    <div id="game-container">
+        <div class="status-msg">Carregando Emulador...</div>
+    </div>
+
+    <script>
+        function startEmulator(core, romPath) {
+            const container = document.getElementById('game-container');
+            
+            // 1. Transforma o caminho relativo (roms/jogo.gba) em URL absoluta (https://site.../roms/jogo.gba)
+            // Isso é CRUCIAL para emuladores baseados em Web.
+            const absoluteRomUrl = new URL(romPath, window.location.href).href;
+
+            // 2. Monta a URL do WebRetro (Serviço externo que roda o emulador)
+            // Usamos o binbashbanana que é estável.
+            const emulatorBaseUrl = "https://binbashbanana.github.io/webretro/";
+            
+            // 3. Cria o Iframe
+            const iframe = document.createElement("iframe");
+            iframe.setAttribute('allow', 'autoplay; fullscreen; gamepad; accelerometer; gyroscope');
+            
+            // Monta a URL final com os parâmetros
+            iframe.src = `${emulatorBaseUrl}?core=${core}&rom=${encodeURIComponent(absoluteRomUrl)}`;
+            
+            // Limpa a mensagem de "Carregando" e insere o iframe
+            container.innerHTML = '';
+            container.appendChild(iframe);
+        }
+
+        window.addEventListener('load', () => {
+            const params = new URLSearchParams(window.location.search);
+            const core = params.get('core'); // Ex: 'mgba' ou 'snes9x'
+            const rom = params.get('rom');   // Ex: 'roms/mario.sfc'
+
+            if (core && rom) {
+                startEmulator(core, rom);
+            } else {
+                document.getElementById('game-container').innerHTML = `
+                    <div class="status-msg" style="color: #ff4444;">
+                        <h3>Erro de Parâmetros</h3>
+                        <p>Não foi possível carregar o jogo.</p>
+                        <p>Core: ${core || 'Não definido'}</p>
+                        <p>ROM: ${rom || 'Não definida'}</p>
+                    </div>`;
+            }
+        });
+    </script>
+
+</body>
+</html>
