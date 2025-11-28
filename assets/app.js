@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage: 'inicio'
     };
 
-    // --- FUNÇÕES DE NAVEGAÇÃO INTERNA (PROXY) ---
+    // --- FUNÇÕES DE NAVEGAÇÃO INTERNA (PROXY FIX) ---
     const handleBrowserNavigate = (e) => {
         e.preventDefault();
         const input = document.getElementById('browser-url-input');
@@ -18,24 +18,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!url) return;
 
-        // Se não parece um site, pesquisa no Google
-        if (!url.includes('.') || url.includes(' ')) {
-            url = `https://www.google.com/search?q=${encodeURIComponent(url)}&igu=1`;
-        } else {
-            if (!url.startsWith('http')) url = 'https://' + url;
-            // Google Translate como proxy
-            url = `https://translate.google.com/translate?sl=auto&tl=pt&u=${encodeURIComponent(url)}`;
+        // 1. Se não tiver http/https, adiciona
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            // Se não tiver ponto (ex: "youtube"), trata como pesquisa
+            if (!url.includes('.')) {
+                url = 'https://www.bing.com/search?q=' + encodeURIComponent(url);
+            } else {
+                url = 'https://' + url;
+            }
         }
-        iframe.src = url;
+
+        // 2. A MÁGICA: Usar o Bing Translator como Proxy
+        // Ele "engole" o site e cospe ele desbloqueado dentro do seu iframe
+        // O Google bloqueia iframes, mas o Bing ainda permite muitos sites.
+        const proxyUrl = `https://www.translatetheweb.com/?from=&to=pt&a=${encodeURIComponent(url)}`;
+
+        iframe.src = proxyUrl;
     };
 
-    // --- MODO FANTASMA ---
+    // --- MODO FANTASMA (ABOUT:BLANK) ---
     const openCloaked = () => {
         const win = window.open('about:blank', '_blank');
         if (!win) return alert('Por favor, permita pop-ups para ativar o Modo Fantasma!');
         
         const url = window.location.href;
         const doc = win.document;
+        
         doc.open();
         doc.write(`
             <!DOCTYPE html>
@@ -43,9 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <head>
                 <title>Google Drive</title>
                 <link rel="icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png">
-                <style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}iframe{border:none;width:100%;height:100%;display:block;}</style>
+                <style>
+                    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #fff; }
+                    iframe { border: none; width: 100%; height: 100%; display: block; }
+                </style>
             </head>
-            <body><iframe src="${url}" allowfullscreen></iframe></body>
+            <body>
+                <iframe src="${url}" allowfullscreen></iframe>
+            </body>
             </html>
         `);
         doc.close();
@@ -82,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button id="cloak-btn" class="discord-btn" title="Modo Fantasma (about:blank)">
                             <i class="fas fa-mask"></i>
                         </button>
-                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Discord">
+                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Junte-se à nossa comunidade no Discord!">
                             <i class="fab fa-discord"></i>
                         </a>
                     </div>
@@ -112,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item.type === 'proxy') {
             actionButtonsHTML = `<button class="card-action-btn open-proxy-btn" data-url="${item.proxyUrl}">Abrir Navegador <i class="fas fa-globe"></i></button>`;
         } else if (item.type === 'script') {
-            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script.">Copiar Script <i class="fas fa-copy"></i></button>`;
+            actionButtonsHTML = `<button class="card-action-btn copy-script-btn" data-script="${item.scriptContent}" title="Copia o script para colar no campo de URL de um novo favorito.">Copiar Script <i class="fas fa-copy"></i></button>`;
         } else if (item.downloadLink && item.alternativeLink) {
             actionButtonsHTML = `
                 <div class="card-action-group">
@@ -253,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const init = async () => {
         document.body.addEventListener('click', (e) => {
+            // 1. Navegação
             const navBtn = e.target.closest('.nav-btn');
             if (navBtn) {
                 e.preventDefault();
@@ -263,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // 2. Copiar Script
             const copyBtn = e.target.closest('.copy-script-btn');
             if (copyBtn) {
                 const script = copyBtn.dataset.script;
@@ -278,13 +293,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // MODO FANTASMA
-            if (e.target.closest('#cloak-btn')) { openCloaked(); return; }
+            // 3. Modo Fantasma (About:Blank)
+            if (e.target.closest('#cloak-btn')) {
+                openCloaked();
+                return;
+            }
 
-            // ABRIR PROXY
+            // 4. Abrir Proxy Modal (Botão do Card)
             const proxyBtn = e.target.closest('.open-proxy-btn');
             if (proxyBtn) {
-                const url = proxyBtn.dataset.url;
+                // Aqui usamos o proxy direto do botão ou o padrão Bing
+                const url = proxyBtn.dataset.url || "https://www.translatetheweb.com/?from=&to=pt&a=https://www.google.com";
                 const modal = document.getElementById('browser-modal');
                 const iframe = document.getElementById('proxy-frame');
                 if (modal && iframe) {
@@ -294,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // FECHAR PROXY
+            // 5. Fechar Proxy
             if (e.target.closest('#close-browser')) {
                 document.getElementById('browser-modal').classList.remove('active');
                 document.getElementById('proxy-frame').src = '';
@@ -302,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // FORMULÁRIO DO NAVEGADOR
+        // Evento do FORMULÁRIO da barra de endereço
         document.body.addEventListener('submit', (e) => {
             if (e.target.id === 'browser-form') {
                 handleBrowserNavigate(e);
