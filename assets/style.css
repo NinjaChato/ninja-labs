@@ -2,12 +2,13 @@
   --background: #050505;
   --surface: #0f0f0f;
   --surface-hover: #161616;
-  --glass: rgba(10, 10, 10, 0.9);
+  --glass: rgba(10, 10, 10, 0.92);
   --text-primary: #ffffff;
   --text-secondary: #9ca3af;
   --border-color: rgba(255, 255, 255, 0.08);
   --accent: #00f6ff; 
   --accent-glow: rgba(0, 246, 255, 0.25);
+  --discord-color: #5865F2;
   --font-body: 'Inter', sans-serif;
   --font-heading: 'Exo 2', sans-serif;
 }
@@ -23,6 +24,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   padding: 1rem;
+  /* Grid Cyberpunk mais sutil */
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
@@ -43,10 +45,16 @@ body {
 /* BOSS SCREEN */
 .boss-screen {
     position: fixed; inset: 0; z-index: 20000; background: #fff;
-    display: none; /* Oculto por padrão */
+    display: none;
 }
 .boss-screen.active { display: block; }
 .boss-screen iframe { width: 100%; height: 100%; border: none; }
+#exit-boss {
+    position: absolute; top: 10px; right: 10px; width: 40px; height: 40px;
+    background: rgba(0,0,0,0.1); border: none; border-radius: 50%;
+    color: transparent; cursor: pointer; z-index: 20001; transition: all 0.3s;
+}
+#exit-boss:hover { background: #ff4757; color: white; } /* Só aparece cor ao passar o mouse */
 
 /* ANIMAÇÕES */
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -69,20 +77,20 @@ body {
 }
 .site-description { color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.5rem; font-weight: 500; }
 
-/* DISCORD BUTTON (Corrigido para a cor da marca) */
+/* BOTÃO DISCORD (Visual Original Restaurado e Melhorado) */
 .discord-btn {
   display: flex; align-items: center; justify-content: center;
   width: 44px; height: 44px; border-radius: 12px;
   background: rgba(255,255,255,0.03); color: var(--text-secondary);
-  font-size: 1.2rem; text-decoration: none; border: 1px solid var(--border-color);
+  font-size: 1.3rem; text-decoration: none; border: 1px solid var(--border-color);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; border:none;
 }
 .discord-btn:hover {
-  background: #5865F2; border-color: #5865F2; color: white;
+  background: var(--discord-color); border-color: var(--discord-color); color: white;
   box-shadow: 0 5px 20px rgba(88, 101, 242, 0.4); transform: translateY(-3px);
 }
 
-/* BOSS BUTTON (Estilo Alerta) */
+/* BOTÃO PÂNICO */
 .boss-btn:hover {
     background: #ff4757; border-color: #ff4757; color: white;
     box-shadow: 0 5px 20px rgba(255, 71, 87, 0.4);
@@ -132,9 +140,7 @@ body {
 .credit-highlight:hover { color: #fff; border-bottom-style: solid; text-shadow: 0 0 10px var(--accent-glow); }
 
 /* FILTROS ATIVOS */
-.active-filters {
-    display: flex; gap: 10px; justify-content: center; margin-bottom: 2rem; animation: slideUp 0.6s ease forwards;
-}
+.active-filters { display: flex; gap: 10px; justify-content: center; margin-bottom: 2rem; animation: slideUp 0.6s ease forwards; }
 .filter-chip {
     background: var(--accent); color: #000; padding: 0.4rem 1rem; border-radius: 20px;
     font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;
@@ -158,14 +164,20 @@ body {
 }
 .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.15); }
 
-/* FAVORITE BUTTON NO CARD */
+/* FAVORITE BUTTON NO CARD (Coração) */
 .card-fav-btn {
     position: absolute; top: 1rem; right: 1rem; background: transparent; border: none;
     color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; z-index: 5;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.2s;
 }
-.card-fav-btn:hover { color: #fff; transform: scale(1.2); }
-.card-fav-btn.active { color: #ff4757; text-shadow: 0 0 15px rgba(255, 71, 87, 0.5); }
+.card-fav-btn:hover { color: #fff; transform: scale(1.1); }
+.card-fav-btn.active { color: #ff4757; text-shadow: 0 0 15px rgba(255, 71, 87, 0.5); animation: heartBeat 0.3s forwards; }
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
 
 .card-icon {
     width: 60px; height: 60px; border-radius: 16px;
@@ -193,7 +205,7 @@ body {
 .card-action-btn:not(.alt):hover { background: #fff; border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
 .card-action-btn.alt { background: transparent; }
 
-/* TAGS (Clicáveis) */
+/* TAGS */
 .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; z-index: 2; position: relative; }
 .tag {
     font-size: 0.7rem; font-weight: 600; text-transform: uppercase; padding: 3px 8px;
@@ -205,6 +217,7 @@ body {
 /* EXTRAS */
 .no-results { text-align: center; padding: 4rem 2rem; background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); border-radius: 1rem; margin-top: 2rem; display: none; }
 .no-results i { font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem; opacity: 0.5; }
+
 .hero-section { text-align: center; padding: 5rem 1rem; }
 .hero-title {
     font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem;
@@ -213,12 +226,18 @@ body {
     animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .hero-subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2.5rem; animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s backwards; }
+
+/* Correção do botão HERO (Texto preto no hover branco) */
 .hero-cta {
     display: inline-block; padding: 1rem 3rem; font-size: 1.1rem; background: var(--accent); color: #000;
     font-weight: 700; border-radius: 99px; text-decoration: none; box-shadow: 0 0 30px var(--accent-glow);
     transition: all 0.3s ease; animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
 }
-.hero-cta:hover { transform: scale(1.05); box-shadow: 0 0 50px var(--accent-glow); background: #fff; }
+.hero-cta:hover { 
+    transform: scale(1.05); box-shadow: 0 0 50px var(--accent-glow); 
+    background: #fff; color: #000 !important; /* Força cor preta no texto */
+}
+
 .site-footer { margin-top: auto; padding: 3rem 1rem; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.9rem; }
 .site-footer i { color: var(--accent); }
 
