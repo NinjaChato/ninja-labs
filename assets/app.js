@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
     const backToTopBtn = document.getElementById('back-to-top');
     const bossScreen = document.getElementById('boss-screen');
+    const exitBossBtn = document.getElementById('exit-boss');
     
     let DB = {};
     
@@ -14,23 +15,41 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- FUNÇÕES DE FAVORITOS ---
-    const toggleFavorite = (title) => {
-        if (state.favorites.includes(title)) {
-            state.favorites = state.favorites.filter(t => t !== title);
-        } else {
+    const toggleFavorite = (title, btnElement) => {
+        const index = state.favorites.indexOf(title);
+        let isAdding = false;
+
+        if (index === -1) {
             state.favorites.push(title);
+            isAdding = true;
+        } else {
+            state.favorites.splice(index, 1);
         }
         localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
-        render(); // Re-renderiza para atualizar os ícones
+
+        // ATUALIZAÇÃO VISUAL INTELIGENTE
+        if (state.currentPage === 'favorites') {
+            // Se estiver na aba favoritos, precisa redesenhar para remover o item
+            render();
+        } else {
+            // Se estiver em outra aba, apenas troca a classe visualmente (sem resetar a página)
+            if (isAdding) {
+                btnElement.classList.add('active');
+                btnElement.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                btnElement.classList.remove('active');
+                btnElement.innerHTML = '<i class="far fa-heart"></i>';
+            }
+        }
     };
 
-    // --- FUNÇÕES DE BOSS KEY ---
+    // --- BOSS KEY ---
     const toggleBossMode = () => {
         bossScreen.classList.toggle('active');
         document.title = bossScreen.classList.contains('active') ? "Turma" : "Ninja Labs";
     };
 
-    // --- FUNÇÕES DE TAGS ---
+    // --- TAGS ---
     const createTagsHTML = (tags) => {
         if (!tags || tags.length === 0) return '';
         const tagsString = tags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
@@ -42,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const createHeader = () => {
         const categories = {
             'inicio': { label: 'Início', icon: 'fa-home' },
-            'favorites': { label: 'Favoritos', icon: 'fa-star' }, // NOVA ABA
+            'favorites': { label: 'Favoritos', icon: 'fa-star' },
             'pcGames': { label: 'Jogos PC', icon: 'fa-desktop' },
             'browserGames': { label: 'Navegador', icon: 'fa-globe' },
             'emulatorGames': { label: 'Emulador', icon: 'fa-ghost' },
@@ -66,11 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="site-description">Acesso restrito, jogos e ferramentas.</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button id="boss-btn" class="discord-btn boss-btn" title="Pânico (Tecla Insert)">
+                        <button id="boss-btn" class="discord-btn boss-btn" title="Pânico (Insert)">
                             <i class="fas fa-briefcase"></i>
-                        </button>
-                        <button id="cloak-btn" class="discord-btn" title="Modo Fantasma">
-                            <i class="fas fa-mask"></i>
                         </button>
                         <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Discord">
                             <i class="fab fa-discord"></i>
@@ -97,9 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const createCard = (item, index = 0) => {
-        // Verifica se é favorito
         const isFav = state.favorites.includes(item.title);
-        const favIconClass = isFav ? 'fas fa-heart active' : 'far fa-heart';
+        const favIconClass = isFav ? 'fas fa-heart' : 'far fa-heart';
+        const activeClass = isFav ? 'active' : '';
 
         let actionButtonsHTML = '';
         if (item.type === 'script') {
@@ -128,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return `
             <div class="card" ${style}>
-                <button class="card-fav-btn ${isFav ? 'active' : ''}" data-title="${item.title}"><i class="${favIconClass}"></i></button>
+                <button class="card-fav-btn ${activeClass}" data-title="${item.title}"><i class="${favIconClass}"></i></button>
                 <div>
                     <div class="card-icon"><i class="${item.icon || 'fas fa-question-circle'}"></i></div>
                     <h3 class="card-title">${item.title}</h3>
@@ -159,25 +175,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createCategoryPage = (categoryKey, title) => {
         let items = [];
-        
-        // Lógica especial para a página de Favoritos
         if (categoryKey === 'favorites') {
             const allItems = Object.values(DB).flat();
+            // Filtra apenas os favoritos únicos para evitar duplicatas se houver jogos com mesmo nome em categorias diferentes (raro)
             items = allItems.filter(item => state.favorites.includes(item.title));
         } else {
             items = DB[categoryKey] || [];
         }
 
-        // Filtragem por Tag
-        let filterHTML = '';
         if (state.activeTag) {
             items = items.filter(item => item.tags && item.tags.includes(state.activeTag));
-            filterHTML = `
-                <div class="active-filters">
-                    <span class="filter-chip" id="clear-filter">
-                        Filtro: ${state.activeTag} <i class="fas fa-times"></i>
-                    </span>
-                </div>`;
         }
         
         let creditsHTML = '';
@@ -186,6 +193,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (categoryKey === 'hacks') {
             creditsHTML = `<p class="section-credits">Desenvolvido por <a href="https://discord.com/invite/platformdestroyer" target="_blank" class="credit-highlight">Platform Destroyer</a></p>`;
         }
+
+        // Filtro Tag HTML
+        let filterHTML = state.activeTag ? `
+            <div class="active-filters">
+                <span class="filter-chip" id="clear-filter">Filtro: ${state.activeTag} <i class="fas fa-times"></i></span>
+            </div>` : '';
 
         if (items.length === 0) {
             const msg = state.activeTag ? "Nenhum item com essa tag." : (categoryKey === 'favorites' ? "Você ainda não favoritou nada." : "Nenhum item aqui.");
@@ -257,17 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const hash = window.location.hash.substring(1);
         const validPages = ['inicio', 'favorites', 'pcGames', 'browserGames', 'emulatorGames', 'hacks', 'tools'];
         state.currentPage = validPages.includes(hash) ? hash : 'inicio';
-        state.activeTag = null; // Reseta filtro ao mudar de página
+        state.activeTag = null; 
         render();
-    };
-
-    const openCloaked = () => {
-        const win = window.open('about:blank', '_blank');
-        if (!win) return alert('Permita pop-ups!');
-        const doc = win.document;
-        doc.open();
-        doc.write(`<!DOCTYPE html><html style="margin:0;padding:0;width:100%;height:100%;"><head><title>Google Drive</title><link rel="icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png"><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}iframe{border:none;width:100%;height:100%;display:block;}</style></head><body><iframe src="${window.location.href}" allowfullscreen></iframe></body></html>`);
-        doc.close();
     };
 
     const init = async () => {
@@ -283,10 +287,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 2. Favoritar
+            // 2. Favoritar (Correção do reset)
             const favBtn = e.target.closest('.card-fav-btn');
             if (favBtn) {
-                toggleFavorite(favBtn.dataset.title);
+                toggleFavorite(favBtn.dataset.title, favBtn);
                 return;
             }
 
@@ -315,15 +319,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 5. Botões Especiais (Cloak / Boss)
-            if (e.target.closest('#cloak-btn')) { openCloaked(); return; }
+            // 5. Boss Mode
             if (e.target.closest('#boss-btn')) { toggleBossMode(); return; }
         });
 
-        // Atalho de Teclado para Boss Key (INSERT)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Insert') toggleBossMode();
-        });
+        // Atalho Teclado e Botão de Saída Boss Mode
+        document.addEventListener('keydown', (e) => { if (e.key === 'Insert') toggleBossMode(); });
+        
+        if(exitBossBtn) {
+            exitBossBtn.addEventListener('click', toggleBossMode);
+        }
 
         if (backToTopBtn) {
             window.addEventListener('scroll', () => {
