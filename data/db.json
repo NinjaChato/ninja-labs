@@ -4,6 +4,7 @@
       "title": "Assassin's Creed II",
       "description": "Na pele de Ezio Auditore, um nobre da Renascença Italiana, busque vingança e descubra os segredos da antiga guerra entre Assassinos e Templários.",
       "icon": "fab fa-assassins-creed",
+      "tags": ["Ação", "Offline"],
       "downloadLink": "https://buzzheavier.com/7m35lpl1e1od",
       "featured": true
     },
@@ -11,60 +12,70 @@
       "title": "BioShock",
       "description": "Explore a cidade subaquática e distópica de Rapture. Um jogo de tiro em primeira pessoa com uma narrativa profunda e atmosfera única.",
       "icon": "fas fa-water",
+      "tags": ["FPS", "História"],
       "downloadLink": "https://buzzheavier.com/071u3qoaaqgh"
     },
     {
       "title": "Five Nights at Freddy's",
       "description": "O jogo que deu início ao fenômeno de terror. Como um guarda de segurança noturno, você deve sobreviver cinco noites em uma pizzaria.",
       "icon": "fas fa-camera-retro",
+      "tags": ["Terror", "Point & Click"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys.exe"
     },
     {
       "title": "Five Nights at Freddy's 2",
       "description": "A sequência expande o terror com novos animatrônicos e mecânicas. Sem portas para se proteger, use a máscara e a lanterna.",
       "icon": "fas fa-camera-retro",
+      "tags": ["Terror"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys2.exe"
     },
     {
       "title": "Five Nights at Freddy's 3",
       "description": "Ambientado trinta anos depois, você trabalha em uma atração de terror. Gerencie sistemas para sobreviver ao Springtrap.",
       "icon": "fas fa-camera-retro",
+      "tags": ["Terror"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys3.exe"
     },
     {
       "title": "Five Nights at Freddy's 4",
       "description": "O terror chega em casa. Jogue como uma criança que deve se defender dos animatrônicos monstruosos que assombram seu quarto.",
       "icon": "fas fa-camera-retro",
+      "tags": ["Terror"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/FiveNightsatFreddys4.exe"
     },
     {
       "title": "FNAF 4 (Halloween Edition)",
       "description": "Atualização temática de Halloween para o FNAF 4 com novos visuais de animatrônicos.",
       "icon": "fas fa-pumpkin",
+      "tags": ["Terror", "DLC"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/HalloweenEdition.exe"
     },
     {
       "title": "Five Nights at Freddy's: Sister Location",
       "description": "Trabalhe como técnico noturno em uma instalação subterrânea. Este jogo muda a fórmula com tarefas variadas.",
       "icon": "fas fa-clown",
+      "tags": ["Terror"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/SisterLocation.exe"
     },
     {
       "title": "FNaF World",
       "description": "Um spin-off de RPG de fantasia com os personagens de FNAF. Explore um mundo colorido e derrote inimigos.",
       "icon": "fas fa-heart",
+      "tags": ["RPG", "Spin-off"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/FNaF_World.exe"
     },
     {
       "title": "Freddy Fazbear's Pizzeria Simulator",
       "description": "Começa como um simulador de pizzaria, mas revela sua natureza de terror com sobrevivência noturna.",
       "icon": "fas fa-pizza-slice",
+      "tags": ["Simulação", "Terror"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/PizzeriaSimulator.exe"
     },
     {
       "title": "Grand Theft Auto: San Andreas",
       "description": "Um marco dos jogos de mundo aberto. Jogue como CJ em um enorme estado fictício cheio de gangues e corrupção.",
       "icon": "fas fa-car-side",
+      "tags": ["Mundo Aberto", "Clássico"],
       "downloadLink": "https://buzzheavier.com/798s0sck9y6i",
       "featured": true
     },
@@ -72,54 +83,63 @@
       "title": "Half-Life",
       "description": "O jogo que revolucionou o gênero FPS. Sobreviva a um experimento que deu errado em Black Mesa.",
       "icon": "fas fa-atom",
+      "tags": ["FPS", "Clássico"],
       "downloadLink": "https://pixeldrain.com/u/cS3bCoyB"
     },
     {
       "title": "Half-Life 2",
       "description": "Continue a saga de Gordon Freeman em um futuro distópico dominado por alienígenas. Física revolucionária.",
       "icon": "fas fa-atom",
+      "tags": ["FPS"],
       "downloadLink": "#"
     },
     {
       "title": "The Henry Stickmin Collection",
       "description": "Uma coleção remasterizada dos clássicos jogos em Flash. Escolha seu caminho com resultados hilários.",
       "icon": "fas fa-gem",
+      "tags": ["Comédia", "Point & Click"],
       "downloadLink": "https://buzzheavier.com/l5itgkjk88yg"
     },
     {
       "title": "Hotline Miami",
       "description": "Ação 2D brutal e rápida com estética neon dos anos 80. Exige reflexos e estratégia.",
       "icon": "fas fa-phone",
+      "tags": ["Ação", "Indie"],
       "downloadLink": "https://buzzheavier.com/cqzjq5yy197r"
     },
     {
       "title": "Limbo",
       "description": "Plataforma e puzzle com visual sombrio. Guie um garoto por um mundo perigoso em busca de sua irmã.",
       "icon": "fas fa-spider",
+      "tags": ["Indie", "Puzzle"],
       "downloadLink": "https://megadb.net/iczzlivay6pp"
     },
     {
       "title": "Need For Speed: Hot Pursuit 2",
       "description": "Corrida arcade com foco em perseguições policiais. Extraia e execute o .Exe.",
       "icon": "fas fa-car-burst",
+      "tags": ["Corrida"],
       "downloadLink": "https://1fichier.com/?cxwhnowjsqre8f0eyemw"
     },
     {
       "title": "Need For Speed: Underground",
       "description": "Corridas noturnas e cultura de tuning. Extraia e execute 'Speed.exe'.",
       "icon": "fas fa-road",
+      "tags": ["Corrida", "Tuning"],
       "downloadLink": "https://1fichier.com/?wg3v32cqoelm5x062dpw"
     },
     {
       "title": "Need For Speed: Underground 2",
       "description": "Mundo aberto e ainda mais customização. Extraia e execute 'Speed2.exe'.",
       "icon": "fas fa-road-spikes",
+      "tags": ["Corrida", "Mundo Aberto"],
       "downloadLink": "https://1fichier.com/?bhc5plxo7tmj3vf3mfip"
     },
     {
       "title": "Need For Speed: Most Wanted (2005)",
       "description": "Corridas de rua e perseguições épicas. Suba na Blacklist. Execute 'Speed.exe'.",
       "icon": "fas fa-car-on-fire",
+      "tags": ["Corrida", "Clássico"],
       "downloadLink": "https://1fichier.com/?dvi1pehq13udj4l8c8yz",
       "featured": true
     },
@@ -127,24 +147,28 @@
       "title": "Need For Speed: Carbon",
       "description": "Domine a cidade e os canyons. Extraia com a senha 'chemical' e execute 'NFSC.exe'.",
       "icon": "fas fa-moon",
+      "tags": ["Corrida"],
       "downloadLink": "https://1fichier.com/?idgjp4xj752dyikhp3iz"
     },
     {
       "title": "Need For Speed: Prostreet",
       "description": "Competições em circuitos fechados. Extraia com a senha 'chemical' e execute 'NFS.exe' como admin.",
       "icon": "fas fa-flag-checkered",
+      "tags": ["Corrida", "Simulação"],
       "downloadLink": "https://1fichier.com/?pjxdlksbu4mhglud2xw6"
     },
     {
       "title": "Need For Speed: Undercover",
       "description": "Policial infiltrado em corridas de alto risco. Extraia e execute 'NFS.exe' como admin.",
       "icon": "fas fa-user-secret",
+      "tags": ["Corrida"],
       "downloadLink": "https://1fichier.com/?g91q4qo2ngzynp66il38"
     },
     {
       "title": "Need For Speed: Shift",
       "description": "Simulação e imersão. Visão de cockpit realista. Execute 'Shift.exe' como admin.",
       "icon": "fas fa-gauge-high",
+      "tags": ["Corrida", "Simulação"],
       "downloadLink": "https://1fichier.com/?75p7yro4qcc1jm50kn8w",
       "alternativeLink": "https://1fichier.com/?gca9jafz6vnhzjfq45mz"
     },
@@ -152,6 +176,7 @@
       "title": "Need For Speed: The Run",
       "description": "Corrida ilegal através dos EUA com narrativa cinematográfica. Extraia e execute o .Exe.",
       "icon": "fas fa-road-bridge",
+      "tags": ["Corrida", "Ação"],
       "downloadLink": "https://drive.google.com/drive/folders/1POPvzDqxHNTvqmZHQt79OKF8RXO9Yh-b?usp=sharing",
       "alternativeLink": "https://1fichier.com/?qhpd1bg953pbjto2it3g"
     },
@@ -159,36 +184,42 @@
       "title": "Need For Speed: Shift 2 Unleashed",
       "description": "Sequência focada em realismo extremo e corridas noturnas. Extraia e execute o .Exe.",
       "icon": "fas fa-gauge-simple-high",
+      "tags": ["Corrida"],
       "downloadLink": "https://1fichier.com/?az4d96ptbm8qz0vu6478"
     },
     {
       "title": "Portal",
       "description": "Puzzle inovador com arma de portais. Resolva desafios guiado pela IA GLaDOS.",
       "icon": "fas fa-circle-dot",
+      "tags": ["Puzzle", "FPS"],
       "downloadLink": "https://buzzheavier.com/6klxm5xf3m3l"
     },
     {
       "title": "Portal 2",
       "description": "Novos elementos de puzzle, campanha cooperativa e muito humor.",
       "icon": "fas fa-circle-dot",
+      "tags": ["Puzzle", "Co-op"],
       "downloadLink": "https://buzzheavier.com/jhbnag5ynrd9"
     },
     {
       "title": "RimWorld",
       "description": "Simulador de colônia sci-fi gerenciado por uma IA contadora de histórias.",
       "icon": "fas fa-users",
+      "tags": ["Estratégia", "Simulação"],
       "downloadLink": "https://gofile.io/d/MCgHda"
     },
     {
       "title": "Ultimate Custom Night",
       "description": "O mashup definitivo de FNAF. Personalize a dificuldade de 50 animatrônicos.",
       "icon": "fas fa-crown",
+      "tags": ["Terror"],
       "downloadLink": "https://archive.org/download/fnaf1ucn/UltimateCustomNight.exe"
     },
     {
       "title": "Undertale",
       "description": "RPG onde ninguém precisa morrer. Suas escolhas afetam o destino dos monstros.",
       "icon": "fas fa-heart-crack",
+      "tags": ["RPG", "Indie"],
       "downloadLink": "https://buzzheavier.com/5zh07h6relk9"
     }
   ],
@@ -197,65 +228,39 @@
       "title": "Minecraft Classic",
       "description": "A versão oficial e gratuita do Minecraft lançada pela Mojang. Construa livremente.",
       "icon": "fas fa-cube",
+      "tags": ["Sandbox", "Online"],
       "gameUrl": "https://classic.minecraft.net/"
     },
     {
       "title": "Doom (1993)",
       "description": "O pai dos jogos de tiro (FPS). Jogue a versão completa do clássico via DOSBox.",
       "icon": "fas fa-gun",
+      "tags": ["FPS", "Clássico"],
       "gameUrl": "https://dos.zone/doom-dec-1993/"
     },
     {
       "title": "Slope",
       "description": "Jogo de reflexos rápidos onde você guia uma bola por uma cidade neon infinita.",
       "icon": "fas fa-bowling-ball",
+      "tags": ["Arcade"],
       "gameUrl": "https://kbhgames.com/game/slope"
     },
     {
       "title": "2048",
       "description": "O clássico quebra-cabeça matemático. Junte os números até chegar em 2048.",
       "icon": "fas fa-border-all",
+      "tags": ["Puzzle"],
       "gameUrl": "https://play2048.co/"
-    },
-    {
-      "title": "CS 1.6 (Play-CS)",
-      "description": "Counter-Strike 1.6 rodando direto no navegador com servidores online reais.",
-      "icon": "fas fa-crosshairs",
-      "gameUrl": "https://play-cs.com/"
-    },
-    {
-      "title": "Chrome Dino 3D",
-      "description": "Uma versão 3D insana do jogo do dinossauro do Google Chrome.",
-      "icon": "fas fa-dragon",
-      "gameUrl": "https://monster-fear.github.io/T-Rex-Run-3D/"
-    },
-    {
-      "title": "Super Mario 64",
-      "description": "Port não oficial incrível de Super Mario 64 rodando nativamente no navegador.",
-      "icon": "fas fa-gamepad",
-      "gameUrl": "https://augustberchelmann.com/mario/"
-    },
-    {
-      "title": "Slow Roads",
-      "description": "Um jogo de direção relaxante com paisagens geradas infinitamente. Ótimo para desestressar.",
-      "icon": "fas fa-car",
-      "gameUrl": "https://slowroads.io/"
-    },
-    {
-      "title": "Spelunky HTML5",
-      "description": "Explore cavernas geradas proceduralmente cheias de monstros e tesouros neste clássico indie.",
-      "icon": "fas fa-dungeon",
-      "gameUrl": "https://yarki.github.io/spelunky/"
     }
   ],
   "emulatorGames": [
     {
-      "title": "Jogo de Emulador (Exemplo)",
-      "description": "Não se esqueça de adicionar a ROM na pasta /roms e especificar o 'core' e o caminho em 'rom'.",
-      "icon": "fas fa-ghost",
+      "title": "Super Mario World (Exemplo)",
+      "description": "Explore a Terra dos Dinossauros com Mario. Requer ROM na pasta correta.",
+      "icon": "fas fa-dragon",
+      "tags": ["SNES", "Plataforma"],
       "core": "snes9x",
-      "rom": "caminho/para/rom.sfc",
-      "featured": true
+      "rom": "supermario.sfc"
     }
   ],
   "hacks": [
@@ -263,30 +268,35 @@
       "title": "Matific",
       "description": "Acesso a recursos avançados da plataforma de matemática Matific.",
       "icon": "fas fa-calculator",
+      "tags": ["Educação"],
       "accessLink": "https://matific.cupiditys.lol"
     },
     {
       "title": "Speak",
       "description": "Melhore suas habilidades de fala e pronúncia com esta ferramenta.",
       "icon": "fas fa-microphone",
+      "tags": ["Educação"],
       "accessLink": "https://speakify.cupiditys.lol"
     },
     {
       "title": "Leia SP",
       "description": "Recursos para a plataforma de leitura e estudo Leia SP.",
       "icon": "fas fa-book-reader",
+      "tags": ["Educação"],
       "accessLink": "https://leiasp.cupiditys.lol"
     },
     {
       "title": "Redação Paulista",
       "description": "Recurso para ajudar na criação de redações para a plataforma de ensino paulista.",
       "icon": "fas fa-pen-nib",
+      "tags": ["Educação"],
       "accessLink": "https://redacao.cupiditys.lol/"
     },
     {
       "title": "Tarefa SP",
       "description": "Ferramenta para auxiliar na resolução de tarefas da plataforma Tarefa SP.",
       "icon": "fas fa-tasks",
+      "tags": ["Educação"],
       "accessLink": "https://taskitos.cupiditys.lol/"
     }
   ],
@@ -295,8 +305,8 @@
       "title": "Psiphon",
       "description": "Garanta seu acesso a qualquer site com esta VPN gratuita (Windows).",
       "icon": "fas fa-shield-alt",
-      "downloadLink": "https://1fichier.com/?593yavv7parm3rj1z79t",
-      "featured": true
+      "tags": ["VPN", "Software"],
+      "downloadLink": "https://1fichier.com/?593yavv7parm3rj1z79t"
     }
   ]
 }
