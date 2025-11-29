@@ -9,7 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage: 'inicio'
     };
 
-    // --- TEMPLATES ---
+    // --- FUNÇÕES DE TEMPLATE ---
+
+    const createTagsHTML = (tags) => {
+        if (!tags || tags.length === 0) return '';
+        const tagsString = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        return `<div class="card-tags">${tagsString}</div>`;
+    };
 
     const createHeader = () => {
         const categories = {
@@ -82,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             actionButtonsHTML = `<a href="${actionLink}" target="_blank" rel="noopener noreferrer" class="card-action-btn">Acessar <i class="fas fa-arrow-right"></i></a>`;
         }
 
+        const tagsHTML = createTagsHTML(item.tags);
         const delay = 200 + (index * 50); 
         const style = `style="animation-delay: ${delay}ms"`;
 
@@ -90,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <div class="card-icon"><i class="${item.icon || 'fas fa-question-circle'}"></i></div>
                     <h3 class="card-title">${item.title}</h3>
+                    ${tagsHTML}
                     <p class="card-description">${item.description}</p>
                 </div>
                 <div class="card-actions-wrapper">${actionButtonsHTML}</div>
