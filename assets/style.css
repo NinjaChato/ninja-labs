@@ -182,49 +182,6 @@ body {
 .card-action-btn:not(.alt):hover { background: #fff; border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
 .card-action-btn.alt { background: transparent; }
 
-/* MODAL NAVEGADOR NINJA */
-.modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(5px);
-}
-.modal-overlay.active { opacity: 1; visibility: visible; }
-.browser-window {
-    width: 95%; height: 90%; background: var(--surface);
-    border: 1px solid var(--border-color); border-radius: 12px;
-    display: flex; flex-direction: column; overflow: hidden;
-    box-shadow: 0 0 50px rgba(0, 246, 255, 0.15); transform: scale(0.95); transition: transform 0.3s ease;
-}
-.modal-overlay.active .browser-window { transform: scale(1); }
-.browser-toolbar {
-    height: 50px; background: var(--surface-hover);
-    border-bottom: 1px solid var(--border-color);
-    display: flex; align-items: center; padding: 0 1rem; gap: 1rem;
-}
-.browser-controls button, .browser-actions button {
-    background: transparent; border: none; color: var(--text-secondary);
-    font-size: 1.2rem; cursor: pointer; transition: color 0.2s;
-    width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-}
-.browser-controls button:hover, .browser-actions button:hover {
-    background: rgba(255,255,255,0.1); color: #fff;
-}
-#close-browser:hover { background: #ff4757; color: white; }
-.browser-address-bar {
-    flex-grow: 1; background: #000; border-radius: 99px;
-    height: 36px; display: flex; align-items: center; padding: 0 1rem;
-    border: 1px solid var(--border-color);
-}
-.browser-address-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-.lock-icon { color: #2ecc71; font-size: 0.8rem; margin-right: 10px; }
-#browser-url-input {
-    background: transparent; border: none; color: white; width: 100%;
-    font-family: var(--font-body); font-size: 0.9rem; outline: none;
-}
-.browser-address-bar button { background: transparent; border: none; color: var(--accent); cursor: pointer; }
-.browser-content { flex-grow: 1; position: relative; background: #fff; }
-.browser-content iframe { width: 100%; height: 100%; border: none; display: block; }
-
 /* EXTRAS */
 .no-results {
     text-align: center; padding: 4rem 2rem; background: rgba(255,255,255,0.02);
