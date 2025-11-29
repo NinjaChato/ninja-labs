@@ -216,15 +216,46 @@
       "description": "O clássico quebra-cabeça matemático. Junte os números até chegar em 2048.",
       "icon": "fas fa-border-all",
       "gameUrl": "https://play2048.co/"
+    },
+    {
+      "title": "CS 1.6 (Play-CS)",
+      "description": "Counter-Strike 1.6 rodando direto no navegador com servidores online reais.",
+      "icon": "fas fa-crosshairs",
+      "gameUrl": "https://play-cs.com/"
+    },
+    {
+      "title": "Chrome Dino 3D",
+      "description": "Uma versão 3D insana do jogo do dinossauro do Google Chrome.",
+      "icon": "fas fa-dragon",
+      "gameUrl": "https://monster-fear.github.io/T-Rex-Run-3D/"
+    },
+    {
+      "title": "Super Mario 64",
+      "description": "Port não oficial incrível de Super Mario 64 rodando nativamente no navegador.",
+      "icon": "fas fa-gamepad",
+      "gameUrl": "https://augustberchelmann.com/mario/"
+    },
+    {
+      "title": "Slow Roads",
+      "description": "Um jogo de direção relaxante com paisagens geradas infinitamente. Ótimo para desestressar.",
+      "icon": "fas fa-car",
+      "gameUrl": "https://slowroads.io/"
+    },
+    {
+      "title": "Spelunky HTML5",
+      "description": "Explore cavernas geradas proceduralmente cheias de monstros e tesouros neste clássico indie.",
+      "icon": "fas fa-dungeon",
+      "gameUrl": "https://yarki.github.io/spelunky/"
     }
   ],
   "emulatorGames": [
     {
-      "title": "Super Mario World (Exemplo)",
-      "description": "Explore a Terra dos Dinossauros com Mario. Requer ROM na pasta correta.",
-      "icon": "fas fa-dragon",
+      "title": "Jogo de Emulador (Exemplo)",
+      "description": "Não se esqueça de adicionar a ROM na pasta /roms e especificar o 'core' e o caminho em 'rom'.",
+      "icon": "fas fa-ghost",
       "core": "snes9x",
-      "rom": "supermario.sfc"
+      "rom": "caminho/para/rom.sfc",
+      "featured": true
     }
   ],
   "hacks": [
@@ -261,18 +292,11 @@
   ],
   "tools": [
     {
-      "title": "Navegador Ninja",
-      "description": "Navegue na internet através de um navegador embutido. Ideal para desbloquear sites.",
-      "icon": "fas fa-globe-americas",
-      "type": "proxy",
-      "proxyUrl": "https://canlite.org",
-      "featured": true
-    },
-    {
       "title": "Psiphon",
       "description": "Garanta seu acesso a qualquer site com esta VPN gratuita (Windows).",
       "icon": "fas fa-shield-alt",
-      "downloadLink": "https://1fichier.com/?593yavv7parm3rj1z79t"
+      "downloadLink": "https://1fichier.com/?593yavv7parm3rj1z79t",
+      "featured": true
     }
   ]
 }
