@@ -23,32 +23,6 @@
     
     <div id="app-container"></div>
 
-    <!-- MODAL NAVEGADOR NINJA (Estilo Browser Nativo) -->
-    <div id="browser-modal" class="modal-overlay">
-        <div class="browser-window glass-effect">
-            <div class="browser-toolbar">
-                <div class="browser-controls">
-                    <button id="close-browser" title="Fechar Navegador"><i class="fas fa-times"></i></button>
-                </div>
-                
-                <!-- Barra de Endereço -->
-                <form id="browser-form" class="browser-address-bar">
-                    <i class="fas fa-lock lock-icon"></i>
-                    <input type="text" id="browser-url-input" placeholder="Digite um site (ex: discord.com) ou pesquisa..." autocomplete="off">
-                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
-                </form>
-                
-                <div class="browser-actions">
-                    <button id="refresh-browser" title="Início" onclick="document.getElementById('proxy-frame').src='https://www.google.com/search?igu=1'"><i class="fas fa-home"></i></button>
-                </div>
-            </div>
-            
-            <div class="browser-content">
-                <iframe id="proxy-frame" src="" allowfullscreen sandbox="allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-popups"></iframe>
-            </div>
-        </div>
-    </div>
-
     <!-- Botão Voltar ao Topo -->
     <button id="back-to-top" aria-label="Voltar ao topo">
         <i class="fas fa-arrow-up"></i>
