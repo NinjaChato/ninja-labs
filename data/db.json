@@ -350,6 +350,13 @@
   ],
   "hacks": [
     {
+      "title": "Apostilas CMSP",
+      "description": "Acesso facilitado às apostilas e materiais didáticos do currículo paulista.",
+      "icon": "fas fa-book-open",
+      "tags": ["Educação"],
+      "accessLink": "https://apostilas-cmsp.vercel.app/"
+    },
+    {
       "title": "Matific",
       "description": "Acesso a recursos avançados da plataforma de matemática Matific.",
       "icon": "fas fa-calculator",
