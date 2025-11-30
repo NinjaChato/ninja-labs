@@ -16,6 +16,35 @@
       "downloadLink": "https://buzzheavier.com/071u3qoaaqgh"
     },
     {
+      "title": "Bully: Scholarship Edition",
+      "description": "Sobreviva à escola Bullworth Academy como o problemático Jimmy Hopkins. O clássico da Rockstar ambientado em um colégio interno.",
+      "icon": "fas fa-graduation-cap",
+      "tags": ["Mundo Aberto", "Ação", "Clássico"],
+      "downloadLink": "https://buzzheavier.com/em6bjyg8dxwz"
+    },
+    {
+      "title": "Counter-Strike 1.6",
+      "description": "O FPS competitivo definitivo. Versão leve, compatível com LAN e inclui bots.",
+      "icon": "fas fa-crosshairs",
+      "tags": ["FPS", "Clássico", "LAN"],
+      "downloadLink": "https://url.csrevo.com/getcsnew",
+      "alternativeLink": "https://drive.google.com/file/d/0Bwa3UPwo0PalV3FraW5qLXBfLTQ/view?usp=drive_link&resourcekey=0-EI89kbpJ7uiECuIh-5pZIQ"
+    },
+    {
+      "title": "Counter-Strike: Source",
+      "description": "A recriação do CS clássico na engine Source. Física realista e tiroteios intensos.",
+      "icon": "fas fa-crosshairs",
+      "tags": ["FPS", "Clássico", "LAN"],
+      "downloadLink": "https://buzzheavier.com/kn3f6fpucy9y"
+    },
+    {
+      "title": "Cuphead (+ DLC)",
+      "description": "Ação clássica 'run and gun' com visual de desenho de 1930. Inclui a DLC 'The Delicious Last Course'.",
+      "icon": "fas fa-mug-hot",
+      "tags": ["Difícil", "Ação", "Indie"],
+      "downloadLink": "https://buzzheavier.com/n6odzuvudocs"
+    },
+    {
       "title": "Five Nights at Freddy's",
       "description": "O jogo que deu início ao fenômeno de terror. Como um guarda de segurança noturno, você deve sobreviver cinco noites em uma pizzaria.",
       "icon": "fas fa-camera-retro",
@@ -72,6 +101,20 @@
       "downloadLink": "https://archive.org/download/fnaf1ucn/PizzeriaSimulator.exe"
     },
     {
+      "title": "Geometry Dash",
+      "description": "Pule e voe através de perigos neste jogo de plataforma baseado em ritmo. Extremamente viciante.",
+      "icon": "fas fa-square",
+      "tags": ["Arcade", "Ritmo", "Difícil"],
+      "downloadLink": "https://buzzheavier.com/pzm4ncupaxrl"
+    },
+    {
+      "title": "Getting Over It",
+      "description": "Um jogo de escalada punitivo. Escale uma montanha enorme com nada além de um martelo e um caldeirão.",
+      "icon": "fas fa-hammer",
+      "tags": ["Difícil", "Indie"],
+      "downloadLink": "https://buzzheavier.com/yhkamej7f5nl"
+    },
+    {
       "title": "Grand Theft Auto: San Andreas",
       "description": "Um marco dos jogos de mundo aberto. Jogue como CJ em um enorme estado fictício cheio de gangues e corrupção.",
       "icon": "fas fa-car-side",
@@ -106,6 +149,20 @@
       "icon": "fas fa-phone",
       "tags": ["Ação", "Indie"],
       "downloadLink": "https://buzzheavier.com/cqzjq5yy197r"
+    },
+    {
+      "title": "Hotline Miami 2: Wrong Number",
+      "description": "A conclusão brutal da saga. Violência extrema, trilha sonora pulsante e dificuldade elevada.",
+      "icon": "fas fa-phone-slash",
+      "tags": ["Ação", "Indie", "Difícil"],
+      "downloadLink": "https://buzzheavier.com/meuz4b9a1chl"
+    },
+    {
+      "title": "Left 4 Dead 2",
+      "description": "Apocalipse zumbi cooperativo. Jogue com amigos através das cidades e pântanos do sul dos EUA.",
+      "icon": "fas fa-skull",
+      "tags": ["FPS", "Terror", "Co-op"],
+      "downloadLink": "https://buzzheavier.com/43zekil1tgve"
     },
     {
       "title": "Limbo",
@@ -188,6 +245,13 @@
       "downloadLink": "https://1fichier.com/?az4d96ptbm8qz0vu6478"
     },
     {
+      "title": "Only Up!",
+      "description": "O jogo viral de parkour. Suba aos céus em um mundo surreal. Se cair, começa tudo de novo.",
+      "icon": "fas fa-cloud-upload-alt",
+      "tags": ["Parkour", "Difícil", "3D"],
+      "downloadLink": "https://gofile.io/d/s1bwYb"
+    },
+    {
       "title": "Portal",
       "description": "Puzzle inovador com arma de portais. Resolva desafios guiado pela IA GLaDOS.",
       "icon": "fas fa-circle-dot",
@@ -214,6 +278,20 @@
       "icon": "fas fa-users",
       "tags": ["Estratégia", "Simulação"],
       "downloadLink": "https://gofile.io/d/MCgHda"
+    },
+    {
+      "title": "Stardew Valley",
+      "description": "Você herdou a antiga fazenda do seu avô. Cultive, pesque e faça amizades neste RPG relaxante.",
+      "icon": "fas fa-leaf",
+      "tags": ["Simulação", "Relaxante", "RPG"],
+      "downloadLink": "https://buzzheavier.com/djg8400snxet"
+    },
+    {
+      "title": "Terraria",
+      "description": "Cave, lute, explore, construa. O mundo está ao seu alcance neste jogo de aventura sandbox 2D cheio de ação.",
+      "icon": "fas fa-tree",
+      "tags": ["Sandbox", "Aventura", "RPG"],
+      "downloadLink": "https://gofile.io/d/ylmvvO"
     },
     {
       "title": "Ultimate Custom Night",
