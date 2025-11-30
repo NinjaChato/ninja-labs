@@ -189,7 +189,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let creditsHTML = '';
         if (categoryKey === 'pcGames') {
-            creditsHTML = `<p class="section-credits">Conteúdo fornecido por <a href="https://steamrip.com" target="_blank" class="credit-highlight">SteamRIP.com</a> e <a href="https://archive.org" target="_blank" class="credit-highlight">Archive.org</a></p>`;
+            creditsHTML = `<p class="section-credits">
+                Conteúdo: <a href="https://steamrip.com" target="_blank" class="credit-highlight">SteamRIP</a>, 
+                <a href="https://archive.org" target="_blank" class="credit-highlight">Archive</a> & 
+                <a href="https://discord.gg/tvxEKnEDpn" target="_blank" class="credit-highlight">ChemicalFl00d (NFS)</a>
+            </p>`;
         } else if (categoryKey === 'hacks') {
             creditsHTML = `<p class="section-credits">Desenvolvido por <a href="https://discord.com/invite/platformdestroyer" target="_blank" class="credit-highlight">Platform Destroyer</a></p>`;
         }
