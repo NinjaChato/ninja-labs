@@ -231,4 +231,89 @@
     }
   ],
   "browserGames": [
-    ...
+    {
+      "title": "Minecraft Classic",
+      "description": "A versão oficial e gratuita do Minecraft lançada pela Mojang. Construa livremente.",
+      "icon": "fas fa-cube",
+      "tags": ["Sandbox", "Online"],
+      "gameUrl": "https://classic.minecraft.net/"
+    },
+    {
+      "title": "Doom (1993)",
+      "description": "O pai dos jogos de tiro (FPS). Jogue a versão completa do clássico via DOSBox.",
+      "icon": "fas fa-gun",
+      "tags": ["FPS", "Clássico"],
+      "gameUrl": "https://dos.zone/doom-dec-1993/"
+    },
+    {
+      "title": "Slope",
+      "description": "Jogo de reflexos rápidos onde você guia uma bola por uma cidade neon infinita.",
+      "icon": "fas fa-bowling-ball",
+      "tags": ["Arcade"],
+      "gameUrl": "https://kbhgames.com/game/slope"
+    },
+    {
+      "title": "2048",
+      "description": "O clássico quebra-cabeça matemático. Junte os números até chegar em 2048.",
+      "icon": "fas fa-border-all",
+      "tags": ["Puzzle"],
+      "gameUrl": "https://play2048.co/"
+    }
+  ],
+  "emulatorGames": [
+    {
+      "title": "Super Mario World (Exemplo)",
+      "description": "Explore a Terra dos Dinossauros com Mario. Requer ROM na pasta correta.",
+      "icon": "fas fa-dragon",
+      "tags": ["SNES", "Plataforma"],
+      "core": "snes9x",
+      "rom": "supermario.sfc"
+    }
+  ],
+  "hacks": [
+    {
+      "title": "Matific",
+      "description": "Acesso a recursos avançados da plataforma de matemática Matific.",
+      "icon": "fas fa-calculator",
+      "tags": ["Educação"],
+      "accessLink": "https://matific.cupiditys.lol"
+    },
+    {
+      "title": "Speak",
+      "description": "Melhore suas habilidades de fala e pronúncia com esta ferramenta.",
+      "icon": "fas fa-microphone",
+      "tags": ["Educação"],
+      "accessLink": "https://speakify.cupiditys.lol"
+    },
+    {
+      "title": "Leia SP",
+      "description": "Recursos para a plataforma de leitura e estudo Leia SP.",
+      "icon": "fas fa-book-reader",
+      "tags": ["Educação"],
+      "accessLink": "https://leiasp.cupiditys.lol"
+    },
+    {
+      "title": "Redação Paulista",
+      "description": "Recurso para ajudar na criação de redações para a plataforma de ensino paulista.",
+      "icon": "fas fa-pen-nib",
+      "tags": ["Educação"],
+      "accessLink": "https://redacao.cupiditys.lol/"
+    },
+    {
+      "title": "Tarefa SP",
+      "description": "Ferramenta para auxiliar na resolução de tarefas da plataforma Tarefa SP.",
+      "icon": "fas fa-tasks",
+      "tags": ["Educação"],
+      "accessLink": "https://taskitos.cupiditys.lol/"
+    }
+  ],
+  "tools": [
+    {
+      "title": "Psiphon",
+      "description": "Garanta seu acesso a qualquer site com esta VPN gratuita (Windows).",
+      "icon": "fas fa-shield-alt",
+      "tags": ["VPN", "Software"],
+      "downloadLink": "https://1fichier.com/?593yavv7parm3rj1z79t"
+    }
+  ]
+}
