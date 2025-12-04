@@ -6,6 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const bossScreen = document.getElementById('boss-screen');
     const exitBossBtn = document.getElementById('exit-boss');
     
+    // --- CONFIGURAÇÃO DA IA ---
+    const GEMINI_API_KEY = "AIzaSyB07p_cBMp52iLGb1k7cQeT1MRSe0imItI";
+    
+    // Histórico da IA (para não apagar quando muda de aba)
+    let aiHistory = [
+        { role: 'bot', text: 'Sistema Ninja Brain v1.0 online. Comandos liberados. Como posso ajudar você hoje?' }
+    ];
+
     let DB = {};
     
     let state = {
@@ -27,12 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
 
-        // ATUALIZAÇÃO VISUAL INTELIGENTE
         if (state.currentPage === 'favorites') {
-            // Se estiver na aba favoritos, precisa redesenhar para remover o item
             render();
         } else {
-            // Se estiver em outra aba, apenas troca a classe visualmente (sem resetar a página)
             if (isAdding) {
                 btnElement.classList.add('active');
                 btnElement.innerHTML = '<i class="fas fa-heart"></i>';
@@ -54,6 +59,69 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tags || tags.length === 0) return '';
         const tagsString = tags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
         return `<div class="card-tags">${tagsString}</div>`;
+    };
+
+    // --- LÓGICA DA IA (GEMINI) ---
+    // Renderiza o histórico salvo
+    const renderAIChat = () => {
+        const container = document.getElementById('ai-chat-output');
+        if(!container) return;
+        container.innerHTML = '';
+        aiHistory.forEach(msg => {
+            const div = document.createElement('div');
+            div.className = `ai-msg ${msg.role}`;
+            div.innerHTML = msg.text;
+            container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+    };
+
+    // Envia mensagem para o Gemini
+    const sendAIMessage = async () => {
+        const input = document.getElementById('ai-user-input');
+        const container = document.getElementById('ai-chat-output');
+        const text = input.value.trim();
+        
+        if (!text) return;
+
+        // Adiciona msg do usuário
+        aiHistory.push({ role: 'user', text: text });
+        renderAIChat();
+        input.value = '';
+
+        // Feedback de carregando
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'ai-msg bot';
+        loadingDiv.innerHTML = 'Processando... <i class="fas fa-microchip fa-spin"></i>';
+        container.appendChild(loadingDiv);
+        container.scrollTop = container.scrollHeight;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: text }] }]
+                })
+            });
+
+            const data = await response.json();
+            let reply = data.candidates[0].content.parts[0].text;
+            
+            // Formatação simples Markdown
+            reply = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            reply = reply.replace(/\n/g, '<br>');
+
+            loadingDiv.remove();
+            aiHistory.push({ role: 'bot', text: reply });
+            renderAIChat();
+
+        } catch (error) {
+            loadingDiv.remove();
+            aiHistory.push({ role: 'bot', text: 'Erro de conexão com o servidor neural (Verifique a API Key).' });
+            renderAIChat();
+            console.error(error);
+        }
     };
 
     // --- TEMPLATES ---
@@ -155,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     };
     
+    // PÁGINA INICIAL COM A IA EM DESTAQUE
     const createHomePage = () => {
         const allItems = Object.values(DB).flat();
         const featuredItems = allItems.filter(item => item.featured);
@@ -162,13 +231,33 @@ document.addEventListener('DOMContentLoaded', () => {
             ? `<h2 class="section-title">Em Destaque</h2><div class="card-grid">${featuredItems.map((item, i) => createCard(item, i)).join('')}</div>`
             : '';
 
+        // HTML da Seção IA
+        const aiHTML = `
+            <section class="ai-section">
+                <div class="ai-console-header">
+                    <span><i class="fas fa-terminal"></i> NINJA BRAIN V1.0</span>
+                    <span style="color:#0f0">● ONLINE</span>
+                </div>
+                <div id="ai-chat-output" class="ai-console-body">
+                    <!-- O chat será renderizado aqui pelo JS -->
+                </div>
+                <div class="ai-input-wrapper">
+                    <input type="text" id="ai-user-input" class="ai-input" placeholder="Digite sua pergunta aqui..." autocomplete="off">
+                    <button id="ai-send-btn" class="ai-send-btn">ENVIAR</button>
+                </div>
+            </section>
+        `;
+
         return `
             <main class="fade-in">
                 <section class="hero-section">
                     <h2 class="hero-title">Acesso Direto ao Essencial</h2>
                     <p class="hero-subtitle">Navegue por uma seleção curada de jogos, ferramentas e recursos.</p>
-                    <a href="#pcGames" data-page="pcGames" class="hero-cta nav-btn">Explorar Conteúdo</a>
                 </section>
+                
+                <!-- AQUI ENTRA A IA EM DESTAQUE -->
+                ${aiHTML}
+
                 <section class="featured-section">${featuredHTML}</section>
             </main>`;
     };
@@ -177,7 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let items = [];
         if (categoryKey === 'favorites') {
             const allItems = Object.values(DB).flat();
-            // Filtra apenas os favoritos únicos para evitar duplicatas se houver jogos com mesmo nome em categorias diferentes (raro)
             items = allItems.filter(item => state.favorites.includes(item.title));
         } else {
             items = DB[categoryKey] || [];
@@ -198,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
             creditsHTML = `<p class="section-credits">Desenvolvido por <a href="https://discord.com/invite/platformdestroyer" target="_blank" class="credit-highlight">Platform Destroyer</a></p>`;
         }
 
-        // Filtro Tag HTML
         let filterHTML = state.activeTag ? `
             <div class="active-filters">
                 <span class="filter-chip" id="clear-filter">Filtro: ${state.activeTag} <i class="fas fa-times"></i></span>
@@ -266,6 +353,20 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const searchInput = document.getElementById('searchInput');
         if (searchInput) searchInput.addEventListener('keyup', debounce(handleSearch, 300));
+
+        // Se estiver na home, ativa os listeners da IA
+        if (state.currentPage === 'inicio') {
+            renderAIChat(); // Restaura o histórico
+            const aiBtn = document.getElementById('ai-send-btn');
+            const aiInput = document.getElementById('ai-user-input');
+            
+            if (aiBtn && aiInput) {
+                aiBtn.addEventListener('click', sendAIMessage);
+                aiInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') sendAIMessage();
+                });
+            }
+        }
         
         window.scrollTo(0, 0);
     };
@@ -280,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const init = async () => {
         document.body.addEventListener('click', (e) => {
-            // 1. Navegação
             const navBtn = e.target.closest('.nav-btn');
             if (navBtn) {
                 e.preventDefault();
@@ -291,14 +391,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 2. Favoritar (Correção do reset)
             const favBtn = e.target.closest('.card-fav-btn');
             if (favBtn) {
                 toggleFavorite(favBtn.dataset.title, favBtn);
                 return;
             }
 
-            // 3. Filtrar por Tag
             const tagBtn = e.target.closest('.tag');
             if (tagBtn) {
                 state.activeTag = tagBtn.dataset.tag;
@@ -311,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 4. Copiar Script
             const copyBtn = e.target.closest('.copy-script-btn');
             if (copyBtn) {
                 const script = copyBtn.dataset.script;
@@ -323,11 +420,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 5. Boss Mode
             if (e.target.closest('#boss-btn')) { toggleBossMode(); return; }
         });
 
-        // Atalho Teclado e Botão de Saída Boss Mode
         document.addEventListener('keydown', (e) => { if (e.key === 'Insert') toggleBossMode(); });
         
         if(exitBossBtn) {
