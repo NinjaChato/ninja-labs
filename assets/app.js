@@ -5,8 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTopBtn = document.getElementById('back-to-top');
     const bossScreen = document.getElementById('boss-screen');
     const exitBossBtn = document.getElementById('exit-boss');
-    const bossFrame = document.getElementById('boss-frame'); // Referência ao iframe
+    const bossFrame = document.getElementById('boss-frame');
+    const faviconElement = document.getElementById('site-favicon'); // Referência ao ícone
     
+    // Configurações do Boss Mode
+    const BOSS_URL = "https://saladofuturo.educacao.sp.gov.br";
+    const BOSS_TITLE = "Sala do Futuro Aluno";
+    const BOSS_ICON = "https://edusp-static.ip.tv/sala-do-futuro/conteudo_logo.png";
+    const NORMAL_TITLE = "Ninja Labs | Acesso Restrito";
+    const NORMAL_ICON = "about:blank"; // Ou coloque o link do seu ícone original aqui
+
     let DB = {};
     
     let state = {
@@ -28,11 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
 
-        // Se estiver na aba favoritos, renderiza tudo de novo para remover o item visualmente
         if (state.currentPage === 'favorites') {
             render();
         } else {
-            // Em outras abas, só troca o ícone
             if (isAdding) {
                 btnElement.classList.add('active');
                 btnElement.innerHTML = '<i class="fas fa-heart"></i>';
@@ -43,18 +49,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- BOSS KEY ---
+    // --- BOSS KEY LOGIC ---
     const toggleBossMode = () => {
         const isActive = bossScreen.classList.contains('active');
         
         if (!isActive) {
-            // Só carrega o site pesado se abrir a tela (Otimização)
-            if(!bossFrame.src) bossFrame.src = "https://saladofuturo.educacao.sp.gov.br";
+            // ATIVANDO MODO PÂNICO
+            if(!bossFrame.src) bossFrame.src = BOSS_URL; // Carrega só na primeira vez
             bossScreen.classList.add('active');
-            document.title = "Sala do Futuro Aluno"; // Disfarce
+            
+            // Troca Título e Ícone
+            document.title = BOSS_TITLE;
+            if(faviconElement) faviconElement.href = BOSS_ICON;
+
         } else {
+            // SAINDO DO MODO PÂNICO
             bossScreen.classList.remove('active');
-            document.title = "Ninja Labs";
+            
+            // Restaura Título e Ícone
+            document.title = NORMAL_TITLE;
+            if(faviconElement) faviconElement.href = NORMAL_ICON;
         }
     };
 
@@ -94,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="site-description">Acesso restrito, jogos e ferramentas.</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button id="boss-btn" class="boss-btn" title="Pânico (Insert)">
+                        <button id="boss-btn" class="boss-btn" title="Pânico (Tecla: \)">
                             <i class="fas fa-briefcase"></i>
                         </button>
                         <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Discord">
@@ -148,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const tagsHTML = createTagsHTML(item.tags);
-        // Delay escalonado para animação suave
         const delay = index * 50; 
         const style = `style="animation-delay: ${delay}ms"`;
 
@@ -165,12 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     };
     
-    // PÁGINA INICIAL (Limpa, sem IA)
     const createHomePage = () => {
         const allItems = Object.values(DB).flat();
         const featuredItems = allItems.filter(item => item.featured);
-        
-        // Garante que a animação de destaque comece logo
         const featuredHTML = featuredItems.length > 0
             ? `<h2 class="section-title">Em Destaque</h2><div class="card-grid">${featuredItems.map((item, i) => createCard(item, i)).join('')}</div>`
             : '';
@@ -182,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="hero-subtitle">Bem-vindo ao hub. Selecione uma categoria no menu acima para começar.</p>
                     <a href="#pcGames" data-page="pcGames" class="hero-cta nav-btn">Explorar Jogos</a>
                 </section>
-                
                 <section class="featured-section">${featuredHTML}</section>
             </main>`;
     };
@@ -200,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
             items = items.filter(item => item.tags && item.tags.includes(state.activeTag));
         }
         
-        // Créditos Atualizados
         let creditsHTML = '';
         if (categoryKey === 'pcGames') {
             creditsHTML = `<p class="section-credits">
@@ -242,8 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </main>`;
     };
 
-    // --- LÓGICA GERAL ---
-
     const handleSearch = () => {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const cards = document.querySelectorAll('.card-grid .card');
@@ -259,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (noResultsMessage) noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
     };
 
-    // Debounce para a busca não travar em PCs lentos
     const debounce = (func, delay) => {
         let timeout;
         return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
@@ -280,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
-            searchInput.focus(); // Foca na busca automaticamente se quiser (opcional)
+            searchInput.focus();
             searchInput.addEventListener('keyup', debounce(handleSearch, 300));
         }
 
@@ -297,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const init = async () => {
         document.body.addEventListener('click', (e) => {
-            // Navegação
             const navBtn = e.target.closest('.nav-btn');
             if (navBtn) {
                 e.preventDefault();
@@ -308,14 +312,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Favoritar
             const favBtn = e.target.closest('.card-fav-btn');
             if (favBtn) {
                 toggleFavorite(favBtn.dataset.title, favBtn);
                 return;
             }
 
-            // Tag Filter
             const tagBtn = e.target.closest('.tag');
             if (tagBtn) {
                 state.activeTag = tagBtn.dataset.tag;
@@ -328,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Copiar Script
             const copyBtn = e.target.closest('.copy-script-btn');
             if (copyBtn) {
                 const script = copyBtn.dataset.script;
@@ -340,11 +341,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Boss Mode
             if (e.target.closest('#boss-btn')) { toggleBossMode(); return; }
         });
 
-        document.addEventListener('keydown', (e) => { if (e.key === 'Insert') toggleBossMode(); });
+        // ATALHO DE PÂNICO: TECLA BARRA INVERTIDA (\)
+        document.addEventListener('keydown', (e) => { 
+            // Tecla '\' (Geralmente perto do Z ou Shift em ABNT2) ou Insert por garantia
+            if (e.key === '\\' || e.key === 'Insert') {
+                toggleBossMode();
+            }
+        });
         
         if(exitBossBtn) {
             exitBossBtn.addEventListener('click', toggleBossMode);
@@ -361,7 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('hashchange', router);
 
         try {
-            // Cache busting para garantir dados sempre novos
             const response = await fetch('data/db.json?v=' + new Date().getTime());
             DB = await response.json();
             router();
