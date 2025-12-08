@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- ELEMENTOS DOM ---
     const appContainer = document.getElementById('app-container');
     const loader = document.getElementById('loader');
     const backToTopBtn = document.getElementById('back-to-top');
@@ -11,16 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const bossFrame = document.getElementById('boss-frame');
     const faviconElement = document.getElementById('site-favicon');
 
-    // Configurações Globais
     const CONFIG = {
         bossUrl: "https://saladofuturo.educacao.sp.gov.br",
         bossTitle: "Sala do Futuro Aluno",
         bossIcon: "https://edusp-static.ip.tv/sala-do-futuro/conteudo_logo.png",
         normalTitle: "Ninja Labs",
-        normalIcon: "about:blank" // Ícone padrão vazio ou coloque o link do seu ícone
+        normalIcon: "about:blank"
     };
     
-    // Estado da Aplicação
     let DB = {};
     let state = {
         currentPage: 'inicio',
@@ -28,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activeTag: null
     };
 
-    // --- SISTEMA DE NAVEGAÇÃO E RENDERIZAÇÃO ---
+    // --- TEMPLATES ---
 
     const templates = {
         header: () => {
@@ -53,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="header-top">
                     <div class="brand">
                         <h1 class="site-title">NINJA<span>LABS</span></h1>
-                        <p class="site-description">Hub de Acesso Restrito v2.0</p>
+                        <p class="site-description">Hub de Acesso Restrito</p>
                     </div>
                     <div class="header-actions">
                         <button id="boss-btn" class="icon-btn boss" title="Modo Pânico (\)">
@@ -68,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="header-nav">
                     <div class="search-container">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar jogos, ferramentas..." autocomplete="off">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar..." autocomplete="off">
                     </div>
                     <nav class="nav-scroll">
                         ${navHTML}
@@ -79,16 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         card: (item, index) => {
             const isFav = state.favorites.includes(item.title);
-            const delay = index * 50; // Stagger animation
+            const delay = Math.min(index * 50, 500); // Limit delay
 
-            // Gera Tags
             const tagsHTML = item.tags ? 
                 `<div class="tags">${item.tags.map(t => `<span class="tag" data-tag="${t}">${t}</span>`).join('')}</div>` : '';
 
-            // Gera Botões de Ação
             let actionsHTML = '';
             if (item.type === 'script') {
-                actionsHTML = `<button class="btn btn-primary copy-script-btn" data-script="${item.scriptContent}"><i class="fas fa-copy"></i> Copiar Script</button>`;
+                actionsHTML = `<button class="btn btn-primary copy-script-btn" data-script="${item.scriptContent}"><i class="fas fa-copy"></i> Copiar</button>`;
             } else if (item.downloadLink && item.alternativeLink) {
                 actionsHTML = `
                     <a href="${item.downloadLink}" target="_blank" class="btn btn-primary"><i class="fas fa-download"></i> Baixar</a>
@@ -125,8 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="fade-in">
                 <section class="hero">
                     <h2>Acesso direto ao <br>essencial.</h2>
-                    <p>Sem bloqueios. Sem rastreamento. Apenas o que você precisa.</p>
-                    <a href="#pcGames" data-page="pcGames" class="cta-btn">Explorar Conteúdo <i class="fas fa-arrow-right"></i></a>
+                    <p>Hub unificado para jogos, scripts e ferramentas escolares.</p>
+                    <a href="#pcGames" data-page="pcGames" class="cta-btn">Explorar <i class="fas fa-arrow-right"></i></a>
                 </section>
                 <div class="section-header">
                     <span class="section-title">Em Destaque</span>
@@ -144,20 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 items = DB[key] || [];
             }
 
-            // Filtro de Tag
             if (state.activeTag) {
                 items = items.filter(i => i.tags && i.tags.includes(state.activeTag));
             }
 
-            // Créditos Específicos
             let credits = '';
-            if (key === 'pcGames') credits = `<div class="section-credits">Fontes: <a href="https://steamrip.com" target="_blank">SteamRIP</a> & <a href="#" target="_blank">ChemicalFl00d</a></div>`;
+            if (key === 'pcGames') credits = `<div class="section-credits">Fontes: <a href="https://steamrip.com" class="credit-link" target="_blank">SteamRIP</a> & <a href="#" class="credit-link">ChemicalFl00d</a></div>`;
 
-            // Filtro UI
             const filterUI = state.activeTag ? 
                 `<div class="filter-bar"><div class="active-tag" id="clear-filter">Tag: ${state.activeTag} <i class="fas fa-times"></i></div></div>` : '';
 
-            // Mensagem Vazia
             if (items.length === 0) {
                 return `
                 <div class="fade-in">
@@ -176,12 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 ${filterUI}
                 <div class="grid">${cards}</div>
-                <div class="no-results"><i class="fas fa-search"></i><p>Nenhum resultado para a busca.</p></div>
+                <div class="no-results"><i class="fas fa-search"></i><p>Nenhum resultado.</p></div>
             </div>`;
         }
     };
 
-    // --- LÓGICA DO APP ---
+    // --- FUNÇÕES ---
 
     const render = () => {
         const titles = {
@@ -202,44 +193,55 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        // Reatribuir eventos de busca e scroll
-        setupSearch();
-        window.scrollTo(0,0);
-    };
-
-    const setupSearch = () => {
-        const input = document.getElementById('searchInput');
-        if (!input) return;
-
-        input.addEventListener('keyup', (e) => {
-            const term = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.grid .card');
-            const noRes = document.querySelector('.no-results');
-            let hasResult = false;
-
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(term)) {
-                    card.style.display = 'flex';
-                    hasResult = true;
-                } else {
-                    card.style.display = 'none';
-                }
+        // Restaura Foco e Eventos
+        const searchInput = document.getElementById('searchInput');
+        if(searchInput) {
+            searchInput.addEventListener('keyup', (e) => {
+                const term = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.grid .card');
+                const noRes = document.querySelector('.no-results');
+                let found = false;
+                
+                cards.forEach(card => {
+                    if(card.innerText.toLowerCase().includes(term)) {
+                        card.style.display = 'flex';
+                        found = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                if(noRes) noRes.style.display = found ? 'none' : 'block';
             });
-
-            if(noRes) noRes.style.display = hasResult ? 'none' : 'block';
-        });
+        }
     };
 
-    // --- FUNÇÕES DE AÇÃO ---
-
-    const toggleFavoriteLogic = (title) => {
+    // LÓGICA DE FAVORITOS OTIMIZADA (SEM RESETAR A PÁGINA)
+    const toggleFavoriteLogic = (title, btn) => {
         const idx = state.favorites.indexOf(title);
-        if (idx === -1) state.favorites.push(title);
-        else state.favorites.splice(idx, 1);
+        
+        // Atualiza Estado
+        if (idx === -1) {
+            state.favorites.push(title);
+            // Atualiza UI Visualmente
+            if(btn) {
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fas fa-heart"></i>';
+            }
+        } else {
+            state.favorites.splice(idx, 1);
+            // Atualiza UI Visualmente
+            if(btn) {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="far fa-heart"></i>';
+            }
+        }
         
         localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
-        render(); // Re-render para atualizar ícones
+
+        // Só recarrega tudo se estivermos na página de favoritos (para remover o card)
+        if (state.currentPage === 'favorites') {
+            render();
+        }
     };
 
     const toggleBoss = () => {
@@ -256,16 +258,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- INICIALIZAÇÃO ---
+    // --- INIT ---
 
     const init = async () => {
         try {
-            // Fetch DB com cache busting
             const res = await fetch(`data/db.json?t=${new Date().getTime()}`);
-            if (!res.ok) throw new Error("Erro HTTP");
+            if (!res.ok) throw new Error("DB Error");
             DB = await res.json();
             
-            // Router Inicial
             const hash = window.location.hash.slice(1);
             if (hash && ['pcGames','browserGames','hacks','tools','favorites'].includes(hash)) {
                 state.currentPage = hash;
@@ -273,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             render();
             
-            // Esconde Loader
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => loader.style.display = 'none', 400);
@@ -281,10 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (err) {
             console.error(err);
-            loader.innerHTML = `<div class="loader-content"><p style="color:#ff4757">Erro ao carregar dados.<br>Verifique o arquivo db.json.</p></div>`;
+            loader.innerHTML = `<div class="loader-content"><p style="color:#ff4757">Erro ao carregar sistema.</p></div>`;
         }
 
-        // Event Listeners Globais
+        // Event Delegation Global
         document.addEventListener('click', (e) => {
             // Navegação
             const nav = e.target.closest('[data-page]');
@@ -293,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.currentPage = nav.dataset.page;
                 state.activeTag = null;
                 render();
+                window.scrollTo(0,0);
             }
 
             // Tags
@@ -301,20 +301,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.activeTag = tag.dataset.tag;
                 render();
             }
-
-            // Limpar Filtro
             if (e.target.closest('#clear-filter')) {
                 state.activeTag = null;
                 render();
             }
 
-            // Favoritar
+            // Favorito (Passamos o botão para a função)
             const fav = e.target.closest('.fav-btn');
             if (fav) {
-                toggleFavoriteLogic(fav.dataset.title);
+                toggleFavoriteLogic(fav.dataset.title, fav);
             }
 
-            // Copiar Script
+            // Copiar
             const copy = e.target.closest('.copy-script-btn');
             if (copy) {
                 navigator.clipboard.writeText(copy.dataset.script);
@@ -323,11 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => copy.innerHTML = original, 2000);
             }
 
-            // Boss Mode Btn
             if (e.target.closest('#boss-btn')) toggleBoss();
         });
 
-        // Event Listeners Fixos
         exitBossBtn.addEventListener('click', toggleBoss);
         document.addEventListener('keydown', (e) => {
             if (e.key === '\\' || e.key === 'Insert') toggleBoss();
