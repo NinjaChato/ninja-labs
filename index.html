@@ -6,38 +6,30 @@
     <meta name="theme-color" content="#000000">
     <title>Ninja Labs</title>
     
-    <!-- FAVICON -->
     <link id="site-favicon" rel="shortcut icon" href="about:blank">
 
-    <!-- FONTES (Inter + JetBrains Mono para código) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-    
-    <!-- ÍCONES -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
     
-    <!-- LOADER -->
     <div id="loader">
+        <div class="loader-logo">NINJA<span>LABS</span></div>
         <div class="loader-bar"></div>
     </div>
     
-    <!-- LAYOUT PRINCIPAL -->
     <div class="layout">
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-icon"><i class="fas fa-shuriken"></i></div>
                 <div class="logo-text">NINJA<span>LABS</span></div>
             </div>
             
-            <nav id="sidebar-nav" class="menu">
-                <!-- Injetado via JS -->
-            </nav>
+            <nav id="sidebar-nav" class="menu"></nav>
 
             <div class="sidebar-footer">
                 <button id="boss-btn" class="footer-btn" title="Modo Pânico (\)">
@@ -49,36 +41,34 @@
             </div>
         </aside>
 
-        <!-- CONTEÚDO -->
         <main class="main-content">
             <header class="top-bar">
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" placeholder="Pesquisar jogos, ferramentas..." autocomplete="off">
-                    <div class="search-shortcut">/</div>
+                    <input type="text" id="searchInput" placeholder="Pesquisar (Aperte /)" autocomplete="off">
                 </div>
             </header>
 
             <div id="app-content" class="content-area">
-                <!-- Conteúdo Injetado via JS -->
+                <div id="skeleton-container" class="grid" style="display:none;">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
             </div>
             
             <footer>
-                <p>Ninja Labs © 2025 &bull; Acesso Restrito</p>
+                <p>Ninja Labs © 2024 &bull; Acesso Restrito</p>
             </footer>
         </main>
     </div>
 
-    <!-- BOSS KEY (Correção do Iframe) -->
     <div id="boss-screen" class="boss-screen">
-        <div class="boss-controls">
-            <span class="boss-hint">Pressione <strong>ESC</strong> ou clique para sair</span>
-            <button id="exit-boss"><i class="fas fa-times"></i></button>
-        </div>
-        <iframe id="boss-frame" src="" frameborder="0"></iframe>
+        <iframe id="boss-frame" src="" frameborder="0" allowfullscreen></iframe>
+        <div id="boss-overlay-exit" title="Clique para Sair"></div>
     </div>
 
-    <!-- NOTIFICAÇÕES (TOAST) -->
     <div id="toast-container"></div>
 
     <script src="assets/app.js"></script>
