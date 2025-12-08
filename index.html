@@ -9,7 +9,7 @@
     <!-- FAVICON -->
     <link id="site-favicon" rel="shortcut icon" href="about:blank">
 
-    <!-- FONTES -->
+    <!-- FONTES (Inter + JetBrains Mono para código) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -28,45 +28,58 @@
     
     <!-- LAYOUT PRINCIPAL -->
     <div class="layout">
-        <!-- SIDEBAR (Menu Lateral) -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo">
-                <i class="fas fa-shuriken"></i>
-                <span>NINJA<strong>LABS</strong></span>
+                <div class="logo-icon"><i class="fas fa-shuriken"></i></div>
+                <div class="logo-text">NINJA<span>LABS</span></div>
             </div>
             
             <nav id="sidebar-nav" class="menu">
-                <!-- Gerado via JS -->
+                <!-- Injetado via JS -->
             </nav>
 
             <div class="sidebar-footer">
-                <button id="boss-btn" title="Modo Pânico (\)"><i class="fas fa-briefcase"></i></button>
-                <a href="https://discord.gg/ATS3E9ZeR7" target="_blank"><i class="fab fa-discord"></i></a>
+                <button id="boss-btn" class="footer-btn" title="Modo Pânico (\)">
+                    <i class="fas fa-briefcase"></i>
+                </button>
+                <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" class="footer-btn discord" title="Discord">
+                    <i class="fab fa-discord"></i>
+                </a>
             </div>
         </aside>
 
         <!-- CONTEÚDO -->
         <main class="main-content">
-            <!-- HEADER DO CONTEÚDO (Busca) -->
             <header class="top-bar">
                 <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="O que você quer jogar hoje?" autocomplete="off">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Pesquisar jogos, ferramentas..." autocomplete="off">
+                    <div class="search-shortcut">/</div>
                 </div>
             </header>
 
-            <!-- ÁREA DINÂMICA -->
-            <div id="app-content" class="content-area"></div>
+            <div id="app-content" class="content-area">
+                <!-- Conteúdo Injetado via JS -->
+            </div>
             
-            <footer>Ninja Labs © 2024</footer>
+            <footer>
+                <p>Ninja Labs © 2025 &bull; Acesso Restrito</p>
+            </footer>
         </main>
     </div>
 
-    <!-- BOSS KEY -->
+    <!-- BOSS KEY (Correção do Iframe) -->
     <div id="boss-screen" class="boss-screen">
-        <button id="exit-boss"><i class="fas fa-times"></i></button>
+        <div class="boss-controls">
+            <span class="boss-hint">Pressione <strong>ESC</strong> ou clique para sair</span>
+            <button id="exit-boss"><i class="fas fa-times"></i></button>
+        </div>
         <iframe id="boss-frame" src="" frameborder="0"></iframe>
     </div>
+
+    <!-- NOTIFICAÇÕES (TOAST) -->
+    <div id="toast-container"></div>
 
     <script src="assets/app.js"></script>
 </body>
