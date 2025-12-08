@@ -5,16 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const loader = document.getElementById('loader');
     const toastContainer = document.getElementById('toast-container');
-    const skeletonContainer = document.getElementById('skeleton-container');
+    const skeletonLoader = document.getElementById('skeleton-loader');
     
     // Boss Mode
     const bossScreen = document.getElementById('boss-screen');
-    const exitBossBtn = document.getElementById('boss-overlay-exit'); // Usando overlay
     const bossFrame = document.getElementById('boss-frame');
     const faviconElement = document.getElementById('site-favicon');
 
     const CONFIG = {
-        bossUrl: "https://saladofuturo.educacao.sp.gov.br",
+        bossUrl: "https://saladofuturo.educacao.sp.gov.br", // URL do Iframe
         bossTitle: "Sala do Futuro",
         bossIcon: "https://edusp-static.ip.tv/sala-do-futuro/conteudo_logo.png",
         normalTitle: "Ninja Labs",
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tag: null
     };
 
-    // --- TOAST ---
+    // --- TOAST SYSTEM ---
     const showToast = (message, icon = 'check-circle') => {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -36,19 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
         toastContainer.appendChild(toast);
         setTimeout(() => {
             toast.style.opacity = '0';
-            toast.style.transform = 'translateY(20px)';
+            toast.style.transform = 'translateY(10px)';
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     };
 
-    // --- RENDERIZAÇÃO ---
+    // --- RENDER ---
 
     const renderSidebar = () => {
-        const mainLinks = [
+        const main = [
             { id: 'inicio', label: 'Início', icon: 'fa-home' },
             { id: 'favorites', label: 'Favoritos', icon: 'fa-heart' }
         ];
-        const catLinks = [
+        const cats = [
             { id: 'pcGames', label: 'Jogos PC', icon: 'fa-desktop' },
             { id: 'browserGames', label: 'Web Games', icon: 'fa-globe' },
             { id: 'emulatorGames', label: 'Emuladores', icon: 'fa-gamepad' },
@@ -56,27 +55,27 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'tools', label: 'Ferramentas', icon: 'fa-toolbox' }
         ];
 
-        const linkHTML = (l) => `
+        const link = (l) => `
             <a href="#" data-page="${l.id}" class="nav-item ${state.page === l.id ? 'active' : ''}">
                 <i class="fas ${l.icon}"></i> <span>${l.label}</span>
             </a>`;
 
-        sidebarNav.innerHTML = `${mainLinks.map(linkHTML).join('')}<div class="menu-label">Categorias</div>${catLinks.map(linkHTML).join('')}`;
+        sidebarNav.innerHTML = `${main.map(link).join('')}<div class="menu-label">Explorar</div>${cats.map(link).join('')}`;
     };
 
     const renderCard = (item, index) => {
         const isFav = state.favorites.includes(item.title);
-        const tagsHTML = item.tags ? `<div class="tags">${item.tags.map(t => `<span class="tag" data-tag="${t}">${t}</span>`).join('')}</div>` : '';
-        const delay = index * 50; // Stagger effect
+        const tags = item.tags ? `<div class="tags">${item.tags.map(t => `<span class="tag" data-tag="${t}">${t}</span>`).join('')}</div>` : '';
+        const delay = Math.min(index * 50, 600); 
 
-        let btnHTML = '';
+        let btn = '';
         if(item.type === 'script') {
-            btnHTML = `<button class="btn btn-primary copy-btn" data-val="${item.scriptContent}"><i class="fas fa-copy"></i> Copiar</button>`;
+            btn = `<button class="btn btn-primary copy-btn" data-val="${item.scriptContent}"><i class="fas fa-copy"></i> Copiar</button>`;
         } else {
             let link = item.downloadLink || item.gameUrl || item.accessLink || '#';
             if(item.rom) link = `player.html?core=${item.core}&rom=${encodeURIComponent('roms/' + item.rom)}`;
-            btnHTML = `<a href="${link}" target="_blank" class="btn btn-primary">Abrir</a>`;
-            if(item.alternativeLink) btnHTML += `<a href="${item.alternativeLink}" target="_blank" class="btn btn-secondary">Mirror</a>`;
+            btn = `<a href="${link}" target="_blank" class="btn btn-primary">Abrir</a>`;
+            if(item.alternativeLink) btn += `<a href="${item.alternativeLink}" target="_blank" class="btn btn-sec">Mirror</a>`;
         }
 
         return `
@@ -88,19 +87,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
             </div>
             <h3>${item.title}</h3>
-            ${tagsHTML}
+            ${tags}
             <p>${item.description}</p>
-            <div class="actions">${btnHTML}</div>
+            <div class="actions">${btn}</div>
         </div>`;
     };
 
     const renderContent = () => {
+        // Exibe Skeleton se estiver carregando algo pesado
+        contentArea.innerHTML = ''; 
+        
         const titles = {
             inicio: 'Visão Geral', pcGames: 'Jogos de PC', browserGames: 'Jogos de Navegador',
             emulatorGames: 'Emuladores', hacks: 'Scripts', tools: 'Ferramentas', favorites: 'Favoritos'
         };
 
-        // HOME PAGE
         if (state.page === 'inicio') {
             const all = Object.values(DB).flat();
             const featured = all.filter(i => i.featured).map(renderCard).join('');
@@ -110,8 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="hero">
                         <div class="hero-content">
                             <h1>Acesso Restrito</h1>
-                            <p>Plataforma unificada para jogos, scripts de automação e ferramentas escolares.</p>
-                            <a href="#" data-page="pcGames" class="btn-cta">Começar Agora</a>
+                            <p>Plataforma unificada para jogos, scripts e ferramentas escolares.</p>
+                            <a href="#" data-page="pcGames" class="btn-cta">Explorar Agora</a>
                         </div>
                     </div>
                     <h2 class="section-title"><i class="fas fa-fire" style="color:var(--brand)"></i> Em Destaque</h2>
@@ -121,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // CATEGORIAS
         let items = [];
         if (state.page === 'favorites') {
             const all = Object.values(DB).flat();
@@ -138,11 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (items.length > 0) {
             contentHTML = `<div class="grid">${items.map(renderCard).join('')}</div>`;
         } else {
-            if (state.page === 'favorites') {
-                contentHTML = `<div class="empty-state"><i class="far fa-heart"></i><h3>Sem favoritos</h3><p>Salve itens aqui para acesso rápido.</p><a href="#" data-page="pcGames" class="btn-cta" style="background:#333; color:#fff; border:none; box-shadow:none;">Explorar</a></div>`;
-            } else {
-                contentHTML = `<div class="empty-state"><i class="fas fa-ghost"></i><h3>Nada aqui</h3><p>Não encontramos nada.</p></div>`;
-            }
+            const emptyMsg = state.page === 'favorites' ? 'Salve seus itens favoritos aqui.' : 'Nada encontrado nesta categoria.';
+            contentHTML = `<div class="empty-state"><i class="far fa-folder-open"></i><h3>Vazio</h3><p>${emptyMsg}</p></div>`;
         }
 
         contentArea.innerHTML = `
@@ -156,11 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const render = () => {
         renderSidebar();
-        // Mostra Skeleton antes do conteúdo
-        if(contentArea.innerHTML === '') {
-            contentArea.appendChild(skeletonContainer.cloneNode(true));
-            document.querySelector('#app-content #skeleton-container').style.display = 'grid';
-        }
         renderContent();
     };
 
@@ -169,26 +161,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadDB = async () => {
         try {
             const res = await fetch(`data/db.json?v=${Date.now()}`);
-            if(!res.ok) throw new Error("DB Error");
+            if(!res.ok) throw new Error("Erro de conexão");
             DB = await res.json();
             
             const hash = window.location.hash.slice(1);
             if(hash && (DB[hash] || hash === 'favorites')) state.page = hash;
 
             render();
-            // Remove Loader inicial da página
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 600);
         } catch (e) {
             console.error(e);
-            loader.innerHTML = '<p style="color:#fff">Erro de conexão.</p>';
+            loader.innerHTML = '<p style="color:#fff">Erro ao carregar dados.</p>';
         }
     };
 
+    // BOSS MODE CORRIGIDO
     const toggleBoss = () => {
         const active = bossScreen.classList.contains('active');
         if(!active) {
-            if(!bossFrame.src) bossFrame.src = CONFIG.bossUrl;
+            // Seta o src apenas se estiver vazio para não recarregar toda vez
+            if(!bossFrame.src || bossFrame.src === 'about:blank') {
+                bossFrame.src = CONFIG.bossUrl;
+            }
             bossScreen.classList.add('active');
             document.title = CONFIG.bossTitle;
             if(faviconElement) faviconElement.href = CONFIG.bossIcon;
@@ -196,10 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
             bossScreen.classList.remove('active');
             document.title = CONFIG.normalTitle;
             if(faviconElement) faviconElement.href = CONFIG.normalIcon;
+            
+            // Opcional: Limpar src para parar o vídeo/áudio se houver
+            // bossFrame.src = 'about:blank'; 
         }
     };
 
-    // --- LISTENERS ---
+    // --- EVENT LISTENERS ---
 
     document.addEventListener('click', (e) => {
         const nav = e.target.closest('[data-page]');
@@ -223,12 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.favorites.push(title);
                 fav.classList.add('active');
                 fav.innerHTML = '<i class="fas fa-heart"></i>';
-                showToast('Adicionado aos favoritos');
+                showToast('Favoritado!');
             } else {
                 state.favorites.splice(idx, 1);
                 fav.classList.remove('active');
                 fav.innerHTML = '<i class="far fa-heart"></i>';
-                showToast('Removido', 'trash');
+                showToast('Removido.', 'trash');
             }
             localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
             if(state.page === 'favorites') {
@@ -240,10 +238,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const copy = e.target.closest('.copy-btn');
         if(copy) {
             navigator.clipboard.writeText(copy.dataset.val);
-            showToast('Script copiado!');
+            showToast('Copiado!');
         }
 
-        if(e.target.closest('#boss-btn') || e.target.closest('#exit-boss') || e.target.closest('#boss-overlay-exit')) toggleBoss();
+        if(e.target.closest('#boss-btn') || e.target.closest('#exit-boss') || e.target.closest('#boss-exit-zone')) toggleBoss();
     });
 
     searchInput.addEventListener('keyup', (e) => {
@@ -253,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const all = Object.values(DB).flat();
         const filtered = all.filter(i => i.title.toLowerCase().includes(val));
-        const html = filtered.length > 0 ? `<div class="grid">${filtered.map(renderCard).join('')}</div>` : `<div class="empty-state"><i class="fas fa-search"></i><h3>Sem resultados</h3></div>`;
+        const html = filtered.length > 0 ? `<div class="grid">${filtered.map(renderCard).join('')}</div>` : `<div class="empty-state"><i class="fas fa-search"></i><h3>Nada</h3></div>`;
         contentArea.innerHTML = `<div class="fade-in-up"><h2 class="section-title">Busca: "${val}"</h2>${html}</div>`;
     });
 
