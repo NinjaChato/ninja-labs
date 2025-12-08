@@ -5,10 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const loader = document.getElementById('loader');
     const toastContainer = document.getElementById('toast-container');
+    const skeletonContainer = document.getElementById('skeleton-container');
     
     // Boss Mode
     const bossScreen = document.getElementById('boss-screen');
-    const exitBossBtn = document.getElementById('exit-boss');
+    const exitBossBtn = document.getElementById('boss-overlay-exit'); // Usando overlay
     const bossFrame = document.getElementById('boss-frame');
     const faviconElement = document.getElementById('site-favicon');
 
@@ -27,14 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tag: null
     };
 
-    // --- TOAST NOTIFICATION SYSTEM ---
+    // --- TOAST ---
     const showToast = (message, icon = 'check-circle') => {
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
         toastContainer.appendChild(toast);
-        
-        // Remove após 3 segundos
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateY(20px)';
@@ -49,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'inicio', label: 'Início', icon: 'fa-home' },
             { id: 'favorites', label: 'Favoritos', icon: 'fa-heart' }
         ];
-
         const catLinks = [
             { id: 'pcGames', label: 'Jogos PC', icon: 'fa-desktop' },
             { id: 'browserGames', label: 'Web Games', icon: 'fa-globe' },
@@ -60,22 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const linkHTML = (l) => `
             <a href="#" data-page="${l.id}" class="nav-item ${state.page === l.id ? 'active' : ''}">
-                <i class="fas ${l.icon}"></i> 
-                <span>${l.label}</span>
+                <i class="fas ${l.icon}"></i> <span>${l.label}</span>
             </a>`;
 
-        sidebarNav.innerHTML = `
-            ${mainLinks.map(linkHTML).join('')}
-            <div class="menu-label">Explorar</div>
-            ${catLinks.map(linkHTML).join('')}
-        `;
+        sidebarNav.innerHTML = `${mainLinks.map(linkHTML).join('')}<div class="menu-label">Categorias</div>${catLinks.map(linkHTML).join('')}`;
     };
 
-    const renderCard = (item) => {
+    const renderCard = (item, index) => {
         const isFav = state.favorites.includes(item.title);
-        
-        const tagsHTML = item.tags ? 
-            `<div class="tags">${item.tags.map(t => `<span class="tag" data-tag="${t}">${t}</span>`).join('')}</div>` : '';
+        const tagsHTML = item.tags ? `<div class="tags">${item.tags.map(t => `<span class="tag" data-tag="${t}">${t}</span>`).join('')}</div>` : '';
+        const delay = index * 50; // Stagger effect
 
         let btnHTML = '';
         if(item.type === 'script') {
@@ -83,13 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             let link = item.downloadLink || item.gameUrl || item.accessLink || '#';
             if(item.rom) link = `player.html?core=${item.core}&rom=${encodeURIComponent('roms/' + item.rom)}`;
-            
             btnHTML = `<a href="${link}" target="_blank" class="btn btn-primary">Abrir</a>`;
             if(item.alternativeLink) btnHTML += `<a href="${item.alternativeLink}" target="_blank" class="btn btn-secondary">Mirror</a>`;
         }
 
         return `
-        <div class="card">
+        <div class="card" style="animation-delay: ${delay}ms">
             <div class="card-header">
                 <div class="card-icon"><i class="${item.icon || 'fas fa-cube'}"></i></div>
                 <button class="fav-btn ${isFav ? 'active' : ''}" data-title="${item.title}" title="Favoritar">
@@ -106,8 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderContent = () => {
         const titles = {
             inicio: 'Visão Geral', pcGames: 'Jogos de PC', browserGames: 'Jogos de Navegador',
-            emulatorGames: 'Emuladores & ROMs', hacks: 'Scripts & Utilitários', tools: 'Ferramentas do Sistema',
-            favorites: 'Seus Favoritos'
+            emulatorGames: 'Emuladores', hacks: 'Scripts', tools: 'Ferramentas', favorites: 'Favoritos'
         };
 
         // HOME PAGE
@@ -116,13 +106,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const featured = all.filter(i => i.featured).map(renderCard).join('');
             
             contentArea.innerHTML = `
-                <div class="hero">
-                    <h1>Acesso Restrito</h1>
-                    <p>Plataforma unificada para jogos, scripts de automação e ferramentas escolares. Sem bloqueios.</p>
-                    <a href="#" data-page="pcGames" class="btn-cta">Começar a Explorar</a>
+                <div class="fade-in-up">
+                    <div class="hero">
+                        <div class="hero-content">
+                            <h1>Acesso Restrito</h1>
+                            <p>Plataforma unificada para jogos, scripts de automação e ferramentas escolares.</p>
+                            <a href="#" data-page="pcGames" class="btn-cta">Começar Agora</a>
+                        </div>
+                    </div>
+                    <h2 class="section-title"><i class="fas fa-fire" style="color:var(--brand)"></i> Em Destaque</h2>
+                    <div class="grid">${featured}</div>
                 </div>
-                <h2 class="section-title"><i class="fas fa-fire" style="color:var(--brand)"></i> Em Destaque</h2>
-                <div class="grid">${featured}</div>
             `;
             return;
         }
@@ -136,49 +130,41 @@ document.addEventListener('DOMContentLoaded', () => {
             items = DB[state.page] || [];
         }
 
-        if (state.tag) {
-            items = items.filter(i => i.tags && i.tags.includes(state.tag));
-        }
+        if (state.tag) items = items.filter(i => i.tags && i.tags.includes(state.tag));
 
-        const filterHTML = state.tag ? 
-            `<div class="filter-info"><div class="chip" id="clear-tag">Filtro: ${state.tag} <i class="fas fa-times"></i></div></div>` : '';
+        const filterHTML = state.tag ? `<div class="filter-info"><div class="chip" id="clear-tag">Filtro: ${state.tag} <i class="fas fa-times"></i></div></div>` : '';
 
-        // EMPTY STATES
         let contentHTML = '';
         if (items.length > 0) {
             contentHTML = `<div class="grid">${items.map(renderCard).join('')}</div>`;
         } else {
             if (state.page === 'favorites') {
-                contentHTML = `
-                    <div class="empty-state">
-                        <i class="far fa-heart"></i>
-                        <h3>Sem favoritos ainda</h3>
-                        <p>Navegue pelas categorias e clique no coração para salvar seus itens preferidos aqui.</p>
-                        <a href="#" data-page="pcGames" class="btn-cta" style="background:#333; color:#fff; border:1px solid #444">Explorar Agora</a>
-                    </div>`;
+                contentHTML = `<div class="empty-state"><i class="far fa-heart"></i><h3>Sem favoritos</h3><p>Salve itens aqui para acesso rápido.</p><a href="#" data-page="pcGames" class="btn-cta" style="background:#333; color:#fff; border:none; box-shadow:none;">Explorar</a></div>`;
             } else {
-                contentHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-ghost"></i>
-                        <h3>Nada encontrado</h3>
-                        <p>Não encontramos nenhum item com esse nome ou filtro.</p>
-                    </div>`;
+                contentHTML = `<div class="empty-state"><i class="fas fa-ghost"></i><h3>Nada aqui</h3><p>Não encontramos nada.</p></div>`;
             }
         }
 
         contentArea.innerHTML = `
-            <h2 class="section-title">${titles[state.page] || state.page}</h2>
-            ${filterHTML}
-            ${contentHTML}
+            <div class="fade-in-up">
+                <h2 class="section-title">${titles[state.page] || state.page}</h2>
+                ${filterHTML}
+                ${contentHTML}
+            </div>
         `;
     };
 
     const render = () => {
         renderSidebar();
+        // Mostra Skeleton antes do conteúdo
+        if(contentArea.innerHTML === '') {
+            contentArea.appendChild(skeletonContainer.cloneNode(true));
+            document.querySelector('#app-content #skeleton-container').style.display = 'grid';
+        }
         renderContent();
     };
 
-    // --- CORE LOGIC ---
+    // --- LOGIC ---
 
     const loadDB = async () => {
         try {
@@ -190,11 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if(hash && (DB[hash] || hash === 'favorites')) state.page = hash;
 
             render();
+            // Remove Loader inicial da página
             loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 500);
+            setTimeout(() => loader.style.display = 'none', 600);
         } catch (e) {
             console.error(e);
-            loader.innerHTML = '<p style="color:#fff; text-align:center">Erro ao carregar sistema.</p>';
+            loader.innerHTML = '<p style="color:#fff">Erro de conexão.</p>';
         }
     };
 
@@ -212,127 +199,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- EVENT LISTENERS ---
+    // --- LISTENERS ---
 
     document.addEventListener('click', (e) => {
-        // NAV
         const nav = e.target.closest('[data-page]');
         if(nav) {
             e.preventDefault();
             state.page = nav.dataset.page;
             state.tag = null;
             render();
-            contentArea.scrollTop = 0; // Scroll content to top
-            
-            // Mobile: Close menu click (Optional implementation)
+            contentArea.scrollTop = 0;
         }
 
-        // TAGS
         const tag = e.target.closest('[data-tag]');
-        if(tag) {
-            state.tag = tag.dataset.tag;
-            render();
-        }
-        if(e.target.closest('#clear-tag')) {
-            state.tag = null;
-            render();
-        }
+        if(tag) { state.tag = tag.dataset.tag; render(); }
+        if(e.target.closest('#clear-tag')) { state.tag = null; render(); }
 
-        // FAVORITOS
         const fav = e.target.closest('.fav-btn');
         if(fav) {
             const title = fav.dataset.title;
             const idx = state.favorites.indexOf(title);
-            
             if(idx === -1) {
                 state.favorites.push(title);
                 fav.classList.add('active');
                 fav.innerHTML = '<i class="fas fa-heart"></i>';
-                showToast(`"${title}" adicionado aos favoritos!`);
+                showToast('Adicionado aos favoritos');
             } else {
                 state.favorites.splice(idx, 1);
                 fav.classList.remove('active');
                 fav.innerHTML = '<i class="far fa-heart"></i>';
-                showToast(`"${title}" removido.`, 'trash');
+                showToast('Removido', 'trash');
             }
             localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
-            
-            // Se estiver na tela de favoritos, remove o card visualmente
             if(state.page === 'favorites') {
                 const card = fav.closest('.card');
-                if(card) {
-                    card.style.transition = 'all 0.3s ease';
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.9)';
-                    setTimeout(() => render(), 300);
-                }
+                if(card) { card.style.opacity='0'; setTimeout(()=> render(), 300); }
             }
         }
 
-        // COPIAR SCRIPT
         const copy = e.target.closest('.copy-btn');
         if(copy) {
             navigator.clipboard.writeText(copy.dataset.val);
-            showToast('Script copiado para a área de transferência!');
+            showToast('Script copiado!');
         }
 
-        // BOSS & EXIT
-        if(e.target.closest('#boss-btn') || e.target.closest('#exit-boss')) toggleBoss();
+        if(e.target.closest('#boss-btn') || e.target.closest('#exit-boss') || e.target.closest('#boss-overlay-exit')) toggleBoss();
     });
 
-    // BUSCA
     searchInput.addEventListener('keyup', (e) => {
         const val = e.target.value.toLowerCase();
-        
-        // Atalho Teclado "/"
-        if(e.key === '/' && document.activeElement !== searchInput) {
-            searchInput.focus();
-            e.preventDefault();
-            return;
-        }
+        if(e.key === '/' && document.activeElement !== searchInput) { searchInput.focus(); e.preventDefault(); return; }
+        if(val === '') { if(state.page === 'search') { state.page = 'inicio'; render(); } return; }
 
-        // Se vazio, volta ao normal
-        if(val === '') {
-            if(state.page === 'search') {
-                state.page = 'inicio';
-                render();
-            }
-            return;
-        }
-
-        // Busca Global
-        const allItems = Object.values(DB).flat();
-        const filtered = allItems.filter(item => item.title.toLowerCase().includes(val));
-
-        // Renderização Manual da Busca
-        let html = '';
-        if(filtered.length > 0) {
-            html = `<div class="grid">${filtered.map(renderCard).join('')}</div>`;
-        } else {
-            html = `
-                <div class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <h3>Nenhum resultado</h3>
-                    <p>Não encontramos nada com "${val}".</p>
-                </div>`;
-        }
-
-        contentArea.innerHTML = `
-            <h2 class="section-title">Resultados da Busca</h2>
-            ${html}
-        `;
+        const all = Object.values(DB).flat();
+        const filtered = all.filter(i => i.title.toLowerCase().includes(val));
+        const html = filtered.length > 0 ? `<div class="grid">${filtered.map(renderCard).join('')}</div>` : `<div class="empty-state"><i class="fas fa-search"></i><h3>Sem resultados</h3></div>`;
+        contentArea.innerHTML = `<div class="fade-in-up"><h2 class="section-title">Busca: "${val}"</h2>${html}</div>`;
     });
 
-    // ATALHO "/" PARA BUSCA
     document.addEventListener('keydown', (e) => {
-        if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
-            e.preventDefault();
-            searchInput.focus();
-        }
-        if (e.key === '\\' || e.key === 'Insert' || e.key === 'Escape') {
-            if(bossScreen.classList.contains('active') && e.key === 'Escape') toggleBoss();
-            if(e.key === '\\' || e.key === 'Insert') toggleBoss();
-        }
+        if(e.key === '/' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); searchInput.focus(); }
+        if(e.key === '\\' || e.key === 'Insert' || (bossScreen.classList.contains('active') && e.key === 'Escape')) toggleBoss();
     });
 
     loadDB();
