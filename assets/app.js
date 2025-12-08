@@ -5,15 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTopBtn = document.getElementById('back-to-top');
     const bossScreen = document.getElementById('boss-screen');
     const exitBossBtn = document.getElementById('exit-boss');
+    const bossFrame = document.getElementById('boss-frame'); // Referência ao iframe
     
-    // --- CONFIGURAÇÃO DA IA ---
-    const GEMINI_API_KEY = "AIzaSyB07p_cBMp52iLGb1k7cQeT1MRSe0imItI";
-    
-    // Histórico da IA (para não apagar quando muda de aba)
-    let aiHistory = [
-        { role: 'bot', text: 'Sistema Ninja Brain v1.0 online. Comandos liberados. Como posso ajudar você hoje?' }
-    ];
-
     let DB = {};
     
     let state = {
@@ -35,9 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
 
+        // Se estiver na aba favoritos, renderiza tudo de novo para remover o item visualmente
         if (state.currentPage === 'favorites') {
             render();
         } else {
+            // Em outras abas, só troca o ícone
             if (isAdding) {
                 btnElement.classList.add('active');
                 btnElement.innerHTML = '<i class="fas fa-heart"></i>';
@@ -50,8 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- BOSS KEY ---
     const toggleBossMode = () => {
-        bossScreen.classList.toggle('active');
-        document.title = bossScreen.classList.contains('active') ? "Turma" : "Ninja Labs";
+        const isActive = bossScreen.classList.contains('active');
+        
+        if (!isActive) {
+            // Só carrega o site pesado se abrir a tela (Otimização)
+            if(!bossFrame.src) bossFrame.src = "https://saladofuturo.educacao.sp.gov.br";
+            bossScreen.classList.add('active');
+            document.title = "Sala do Futuro Aluno"; // Disfarce
+        } else {
+            bossScreen.classList.remove('active');
+            document.title = "Ninja Labs";
+        }
     };
 
     // --- TAGS ---
@@ -59,69 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tags || tags.length === 0) return '';
         const tagsString = tags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
         return `<div class="card-tags">${tagsString}</div>`;
-    };
-
-    // --- LÓGICA DA IA (GEMINI) ---
-    // Renderiza o histórico salvo
-    const renderAIChat = () => {
-        const container = document.getElementById('ai-chat-output');
-        if(!container) return;
-        container.innerHTML = '';
-        aiHistory.forEach(msg => {
-            const div = document.createElement('div');
-            div.className = `ai-msg ${msg.role}`;
-            div.innerHTML = msg.text;
-            container.appendChild(div);
-        });
-        container.scrollTop = container.scrollHeight;
-    };
-
-    // Envia mensagem para o Gemini
-    const sendAIMessage = async () => {
-        const input = document.getElementById('ai-user-input');
-        const container = document.getElementById('ai-chat-output');
-        const text = input.value.trim();
-        
-        if (!text) return;
-
-        // Adiciona msg do usuário
-        aiHistory.push({ role: 'user', text: text });
-        renderAIChat();
-        input.value = '';
-
-        // Feedback de carregando
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'ai-msg bot';
-        loadingDiv.innerHTML = 'Processando... <i class="fas fa-microchip fa-spin"></i>';
-        container.appendChild(loadingDiv);
-        container.scrollTop = container.scrollHeight;
-
-        try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: text }] }]
-                })
-            });
-
-            const data = await response.json();
-            let reply = data.candidates[0].content.parts[0].text;
-            
-            // Formatação simples Markdown
-            reply = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            reply = reply.replace(/\n/g, '<br>');
-
-            loadingDiv.remove();
-            aiHistory.push({ role: 'bot', text: reply });
-            renderAIChat();
-
-        } catch (error) {
-            loadingDiv.remove();
-            aiHistory.push({ role: 'bot', text: 'Erro de conexão com o servidor neural (Verifique a API Key).' });
-            renderAIChat();
-            console.error(error);
-        }
     };
 
     // --- TEMPLATES ---
@@ -153,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="site-description">Acesso restrito, jogos e ferramentas.</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button id="boss-btn" class="discord-btn boss-btn" title="Pânico (Insert)">
+                        <button id="boss-btn" class="boss-btn" title="Pânico (Insert)">
                             <i class="fas fa-briefcase"></i>
                         </button>
                         <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" rel="noopener noreferrer" class="discord-btn" title="Discord">
@@ -164,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="header-bottom">
                     <div class="search-wrapper">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar na página atual...">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar na página atual..." autocomplete="off">
                     </div>
                     <nav class="nav-buttons">${navButtonsHTML}</nav>
                 </div>
@@ -207,7 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const tagsHTML = createTagsHTML(item.tags);
-        const delay = 200 + (index * 50); 
+        // Delay escalonado para animação suave
+        const delay = index * 50; 
         const style = `style="animation-delay: ${delay}ms"`;
 
         return `
@@ -223,41 +165,24 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     };
     
-    // PÁGINA INICIAL COM A IA EM DESTAQUE
+    // PÁGINA INICIAL (Limpa, sem IA)
     const createHomePage = () => {
         const allItems = Object.values(DB).flat();
         const featuredItems = allItems.filter(item => item.featured);
+        
+        // Garante que a animação de destaque comece logo
         const featuredHTML = featuredItems.length > 0
             ? `<h2 class="section-title">Em Destaque</h2><div class="card-grid">${featuredItems.map((item, i) => createCard(item, i)).join('')}</div>`
             : '';
 
-        // HTML da Seção IA
-        const aiHTML = `
-            <section class="ai-section">
-                <div class="ai-console-header">
-                    <span><i class="fas fa-terminal"></i> NINJA BRAIN V1.0</span>
-                    <span style="color:#0f0">● ONLINE</span>
-                </div>
-                <div id="ai-chat-output" class="ai-console-body">
-                    <!-- O chat será renderizado aqui pelo JS -->
-                </div>
-                <div class="ai-input-wrapper">
-                    <input type="text" id="ai-user-input" class="ai-input" placeholder="Digite sua pergunta aqui..." autocomplete="off">
-                    <button id="ai-send-btn" class="ai-send-btn">ENVIAR</button>
-                </div>
-            </section>
-        `;
-
         return `
             <main class="fade-in">
                 <section class="hero-section">
-                    <h2 class="hero-title">Acesso Direto ao Essencial</h2>
-                    <p class="hero-subtitle">Navegue por uma seleção curada de jogos, ferramentas e recursos.</p>
+                    <h2 class="hero-title">Acesso Restrito</h2>
+                    <p class="hero-subtitle">Bem-vindo ao hub. Selecione uma categoria no menu acima para começar.</p>
+                    <a href="#pcGames" data-page="pcGames" class="hero-cta nav-btn">Explorar Jogos</a>
                 </section>
                 
-                <!-- AQUI ENTRA A IA EM DESTAQUE -->
-                ${aiHTML}
-
                 <section class="featured-section">${featuredHTML}</section>
             </main>`;
     };
@@ -275,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             items = items.filter(item => item.tags && item.tags.includes(state.activeTag));
         }
         
+        // Créditos Atualizados
         let creditsHTML = '';
         if (categoryKey === 'pcGames') {
             creditsHTML = `<p class="section-credits">
@@ -333,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (noResultsMessage) noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
     };
 
+    // Debounce para a busca não travar em PCs lentos
     const debounce = (func, delay) => {
         let timeout;
         return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
@@ -352,22 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
         appContainer.innerHTML = `<div class="app-wrapper">${createHeader()}${pageContentHTML}${createFooter()}</div>`;
         
         const searchInput = document.getElementById('searchInput');
-        if (searchInput) searchInput.addEventListener('keyup', debounce(handleSearch, 300));
-
-        // Se estiver na home, ativa os listeners da IA
-        if (state.currentPage === 'inicio') {
-            renderAIChat(); // Restaura o histórico
-            const aiBtn = document.getElementById('ai-send-btn');
-            const aiInput = document.getElementById('ai-user-input');
-            
-            if (aiBtn && aiInput) {
-                aiBtn.addEventListener('click', sendAIMessage);
-                aiInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') sendAIMessage();
-                });
-            }
+        if (searchInput) {
+            searchInput.focus(); // Foca na busca automaticamente se quiser (opcional)
+            searchInput.addEventListener('keyup', debounce(handleSearch, 300));
         }
-        
+
         window.scrollTo(0, 0);
     };
     
@@ -381,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const init = async () => {
         document.body.addEventListener('click', (e) => {
+            // Navegação
             const navBtn = e.target.closest('.nav-btn');
             if (navBtn) {
                 e.preventDefault();
@@ -391,12 +308,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Favoritar
             const favBtn = e.target.closest('.card-fav-btn');
             if (favBtn) {
                 toggleFavorite(favBtn.dataset.title, favBtn);
                 return;
             }
 
+            // Tag Filter
             const tagBtn = e.target.closest('.tag');
             if (tagBtn) {
                 state.activeTag = tagBtn.dataset.tag;
@@ -409,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Copiar Script
             const copyBtn = e.target.closest('.copy-script-btn');
             if (copyBtn) {
                 const script = copyBtn.dataset.script;
@@ -420,6 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Boss Mode
             if (e.target.closest('#boss-btn')) { toggleBossMode(); return; }
         });
 
@@ -440,13 +361,19 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('hashchange', router);
 
         try {
+            // Cache busting para garantir dados sempre novos
             const response = await fetch('data/db.json?v=' + new Date().getTime());
             DB = await response.json();
             router();
         } catch (error) {
-            appContainer.innerHTML = `<p style="color:red; text-align:center;">Falha ao carregar dados.</p>`;
+            appContainer.innerHTML = `<p style="color:red; text-align:center; padding: 2rem;">Erro crítico: Não foi possível carregar o banco de dados (db.json).</p>`;
+            console.error(error);
         } finally {
-            if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
+            if (loader) { 
+                loader.style.opacity = '0'; 
+                loader.style.visibility = 'hidden';
+                setTimeout(() => loader.style.display = 'none', 400); 
+            }
         }
     };
 
