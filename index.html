@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#000000">
-    <meta name="description" content="Ninja Labs Access">
+    <meta name="theme-color" content="#050505">
     <title>Ninja Labs</title>
     
     <link id="site-favicon" rel="shortcut icon" href="about:blank">
 
-    <!-- FONTES PREMIUM -->
+    <!-- FONTES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -19,72 +18,55 @@
 </head>
 <body>
     
-    <!-- LOADER INICIAL -->
+    <!-- LOADER -->
     <div id="loader">
         <div class="loader-content">
-            <div class="ninja-icon"><i class="fas fa-shuriken fa-spin"></i></div>
-            <div class="loader-text">INICIALIZANDO SISTEMA...</div>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>CARREGANDO SISTEMA</span>
         </div>
     </div>
     
-    <!-- ESTRUTURA PRINCIPAL -->
-    <div class="layout">
+    <!-- LAYOUT -->
+    <div class="app-layout">
+        
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo">
-                <div class="logo-symbol"><i class="fas fa-bolt"></i></div>
+                <i class="fas fa-bolt logo-icon"></i>
                 <div class="logo-text">NINJA<span>LABS</span></div>
             </div>
             
-            <nav id="sidebar-nav" class="menu"></nav>
+            <nav id="sidebar-menu" class="menu-scroll"></nav>
 
             <div class="sidebar-footer">
-                <button id="boss-btn" class="footer-btn" title="Modo Pânico (\)">
-                    <i class="fas fa-briefcase"></i>
-                </button>
-                <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" class="footer-btn discord" title="Discord">
-                    <i class="fab fa-discord"></i>
-                </a>
+                <button id="boss-btn" title="Modo Pânico (\)"><i class="fas fa-briefcase"></i></button>
+                <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
             </div>
         </aside>
 
-        <!-- CONTEÚDO -->
+        <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content">
+            <!-- Top Bar -->
             <header class="top-bar">
-                <div class="search-wrapper">
-                    <i class="fas fa-search search-icon"></i>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Pesquisar..." autocomplete="off">
-                    <kbd class="shortcut-hint">/</kbd>
                 </div>
             </header>
 
-            <div id="app-content" class="content-area">
-                <!-- SKELETON LOADING (Placeholder) -->
-                <div id="skeleton-loader" class="grid">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </div>
+            <!-- Área de Cards -->
+            <div id="content-area" class="content-scroll"></div>
             
-            <footer>
-                <p>Ninja Labs v2.0 &bull; Acesso Restrito</p>
+            <footer class="main-footer">
+                Ninja Labs v2.0 &bull; Acesso Restrito
             </footer>
         </main>
     </div>
 
-    <!-- BOSS KEY (CORRIGIDO) -->
-    <div id="boss-screen" class="boss-screen">
-        <!-- Loader falso para realismo -->
-        <div id="boss-loader" class="boss-loader">
-            <div class="spinner-school"></div>
-            <p>Carregando CMSP...</p>
-        </div>
-        <iframe id="boss-frame" src="" frameborder="0" allowfullscreen></iframe>
-        <!-- Botão invisível de saída (Canto Superior Direito) -->
-        <div id="boss-exit-zone" title="Clique para Sair"></div>
+    <!-- BOSS MODE (TELA DE PÂNICO) -->
+    <div id="boss-screen">
+        <iframe id="boss-frame" src="about:blank" frameborder="0"></iframe>
+        <div id="boss-exit-area" title="Clique para Sair"></div>
     </div>
 
     <!-- NOTIFICAÇÕES -->
