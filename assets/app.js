@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarNav = document.getElementById('sidebar-nav');
     const searchInput = document.getElementById('searchInput');
     const loader = document.getElementById('loader');
+    const toastContainer = document.getElementById('toast-container');
     
     // Boss Mode
     const bossScreen = document.getElementById('boss-screen');
@@ -26,24 +27,37 @@ document.addEventListener('DOMContentLoaded', () => {
         tag: null
     };
 
+    // --- TOAST NOTIFICATION SYSTEM ---
+    const showToast = (message, icon = 'check-circle') => {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+        toastContainer.appendChild(toast);
+        
+        // Remove após 3 segundos
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
     // --- RENDERIZAÇÃO ---
 
     const renderSidebar = () => {
-        // MENU ORGANIZADO: Início e Favoritos no topo
         const mainLinks = [
             { id: 'inicio', label: 'Início', icon: 'fa-home' },
-            { id: 'favorites', label: 'Meus Favoritos', icon: 'fa-heart' }
+            { id: 'favorites', label: 'Favoritos', icon: 'fa-heart' }
         ];
 
         const catLinks = [
             { id: 'pcGames', label: 'Jogos PC', icon: 'fa-desktop' },
-            { id: 'browserGames', label: 'Navegador', icon: 'fa-globe' },
-            { id: 'emulatorGames', label: 'Emulador', icon: 'fa-gamepad' },
-            { id: 'hacks', label: 'Hacks', icon: 'fa-user-secret' },
-            { id: 'tools', label: 'Ferramentas', icon: 'fa-wrench' }
+            { id: 'browserGames', label: 'Web Games', icon: 'fa-globe' },
+            { id: 'emulatorGames', label: 'Emuladores', icon: 'fa-gamepad' },
+            { id: 'hacks', label: 'Scripts', icon: 'fa-code' },
+            { id: 'tools', label: 'Ferramentas', icon: 'fa-toolbox' }
         ];
 
-        // Função auxiliar para gerar HTML do link
         const linkHTML = (l) => `
             <a href="#" data-page="${l.id}" class="nav-item ${state.page === l.id ? 'active' : ''}">
                 <i class="fas ${l.icon}"></i> 
@@ -52,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sidebarNav.innerHTML = `
             ${mainLinks.map(linkHTML).join('')}
-            <div class="menu-label">Categorias</div>
+            <div class="menu-label">Explorar</div>
             ${catLinks.map(linkHTML).join('')}
         `;
     };
@@ -65,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let btnHTML = '';
         if(item.type === 'script') {
-            btnHTML = `<button class="btn btn-primary copy-btn" data-val="${item.scriptContent}"><i class="fas fa-copy" style="margin-right:5px"></i> Copiar</button>`;
+            btnHTML = `<button class="btn btn-primary copy-btn" data-val="${item.scriptContent}"><i class="fas fa-copy"></i> Copiar</button>`;
         } else {
             let link = item.downloadLink || item.gameUrl || item.accessLink || '#';
             if(item.rom) link = `player.html?core=${item.core}&rom=${encodeURIComponent('roms/' + item.rom)}`;
@@ -78,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card">
             <div class="card-header">
                 <div class="card-icon"><i class="${item.icon || 'fas fa-cube'}"></i></div>
-                <button class="fav-btn ${isFav ? 'active' : ''}" data-title="${item.title}">
+                <button class="fav-btn ${isFav ? 'active' : ''}" data-title="${item.title}" title="Favoritar">
                     <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                 </button>
             </div>
@@ -91,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderContent = () => {
         const titles = {
-            inicio: 'Hub Principal', pcGames: 'Jogos de PC', browserGames: 'Web Games',
-            emulatorGames: 'Emuladores', hacks: 'Scripts & Hacks', tools: 'Ferramentas',
+            inicio: 'Visão Geral', pcGames: 'Jogos de PC', browserGames: 'Jogos de Navegador',
+            emulatorGames: 'Emuladores & ROMs', hacks: 'Scripts & Utilitários', tools: 'Ferramentas do Sistema',
             favorites: 'Seus Favoritos'
         };
 
@@ -104,16 +118,16 @@ document.addEventListener('DOMContentLoaded', () => {
             contentArea.innerHTML = `
                 <div class="hero">
                     <h1>Acesso Restrito</h1>
-                    <p>Hub unificado para jogos, scripts e ferramentas escolares.</p>
-                    <a href="#" data-page="pcGames" class="btn-cta">Ver Jogos</a>
+                    <p>Plataforma unificada para jogos, scripts de automação e ferramentas escolares. Sem bloqueios.</p>
+                    <a href="#" data-page="pcGames" class="btn-cta">Começar a Explorar</a>
                 </div>
-                <h2 class="section-title"><i class="fas fa-fire" style="margin-right:10px; color:orange"></i> Destaques</h2>
+                <h2 class="section-title"><i class="fas fa-fire" style="color:var(--brand)"></i> Em Destaque</h2>
                 <div class="grid">${featured}</div>
             `;
             return;
         }
 
-        // PREPARAÇÃO DE ITENS
+        // CATEGORIAS
         let items = [];
         if (state.page === 'favorites') {
             const all = Object.values(DB).flat();
@@ -129,29 +143,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterHTML = state.tag ? 
             `<div class="filter-info"><div class="chip" id="clear-tag">Filtro: ${state.tag} <i class="fas fa-times"></i></div></div>` : '';
 
-        // --- EMPTY STATES (BONITINHOS) ---
+        // EMPTY STATES
         let contentHTML = '';
-
         if (items.length > 0) {
             contentHTML = `<div class="grid">${items.map(renderCard).join('')}</div>`;
         } else {
-            // Se for favoritos vazio
             if (state.page === 'favorites') {
                 contentHTML = `
                     <div class="empty-state">
                         <i class="far fa-heart"></i>
-                        <h3>Você ainda não tem favoritos</h3>
+                        <h3>Sem favoritos ainda</h3>
                         <p>Navegue pelas categorias e clique no coração para salvar seus itens preferidos aqui.</p>
                         <a href="#" data-page="pcGames" class="btn-cta" style="background:#333; color:#fff; border:1px solid #444">Explorar Agora</a>
                     </div>`;
-            } 
-            // Se for busca/tag vazia
-            else {
+            } else {
                 contentHTML = `
                     <div class="empty-state">
                         <i class="fas fa-ghost"></i>
                         <h3>Nada encontrado</h3>
-                        <p>Não encontramos nenhum item com esse nome ou filtro. Tente buscar por outra coisa.</p>
+                        <p>Não encontramos nenhum item com esse nome ou filtro.</p>
                     </div>`;
             }
         }
@@ -168,22 +178,23 @@ document.addEventListener('DOMContentLoaded', () => {
         renderContent();
     };
 
-    // --- LÓGICA ---
+    // --- CORE LOGIC ---
 
     const loadDB = async () => {
         try {
             const res = await fetch(`data/db.json?v=${Date.now()}`);
+            if(!res.ok) throw new Error("DB Error");
             DB = await res.json();
             
             const hash = window.location.hash.slice(1);
-            if(hash && DB[hash] || hash === 'favorites') state.page = hash;
+            if(hash && (DB[hash] || hash === 'favorites')) state.page = hash;
 
             render();
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 500);
         } catch (e) {
             console.error(e);
-            loader.innerHTML = '<p style="color:red">Erro ao carregar dados.</p>';
+            loader.innerHTML = '<p style="color:#fff; text-align:center">Erro ao carregar sistema.</p>';
         }
     };
 
@@ -201,22 +212,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- EVENTOS ---
+    // --- EVENT LISTENERS ---
 
     document.addEventListener('click', (e) => {
-        // Nav Links
+        // NAV
         const nav = e.target.closest('[data-page]');
         if(nav) {
             e.preventDefault();
             state.page = nav.dataset.page;
             state.tag = null;
             render();
-            // Em mobile, scroll para o topo do conteúdo, não da página
-            const contentDiv = document.querySelector('.content-area');
-            if(contentDiv) contentDiv.scrollTop = 0;
+            contentArea.scrollTop = 0; // Scroll content to top
+            
+            // Mobile: Close menu click (Optional implementation)
         }
 
-        // Tags
+        // TAGS
         const tag = e.target.closest('[data-tag]');
         if(tag) {
             state.tag = tag.dataset.tag;
@@ -227,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             render();
         }
 
-        // Favoritar
+        // FAVORITOS
         const fav = e.target.closest('.fav-btn');
         if(fav) {
             const title = fav.dataset.title;
@@ -237,51 +248,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.favorites.push(title);
                 fav.classList.add('active');
                 fav.innerHTML = '<i class="fas fa-heart"></i>';
+                showToast(`"${title}" adicionado aos favoritos!`);
             } else {
                 state.favorites.splice(idx, 1);
                 fav.classList.remove('active');
                 fav.innerHTML = '<i class="far fa-heart"></i>';
+                showToast(`"${title}" removido.`, 'trash');
             }
             localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
             
-            // Remove visualmente se estiver na tela de favoritos
+            // Se estiver na tela de favoritos, remove o card visualmente
             if(state.page === 'favorites') {
                 const card = fav.closest('.card');
                 if(card) {
+                    card.style.transition = 'all 0.3s ease';
                     card.style.opacity = '0';
-                    setTimeout(() => render(), 300); // Re-renderiza para mostrar o empty state se esvaziar
+                    card.style.transform = 'scale(0.9)';
+                    setTimeout(() => render(), 300);
                 }
             }
         }
 
-        // Copiar
+        // COPIAR SCRIPT
         const copy = e.target.closest('.copy-btn');
         if(copy) {
             navigator.clipboard.writeText(copy.dataset.val);
-            const old = copy.innerHTML;
-            copy.innerHTML = "Copiado!";
-            setTimeout(()=> copy.innerHTML = old, 2000);
+            showToast('Script copiado para a área de transferência!');
         }
 
-        // Boss
+        // BOSS & EXIT
         if(e.target.closest('#boss-btn') || e.target.closest('#exit-boss')) toggleBoss();
     });
 
-    // Busca
+    // BUSCA
     searchInput.addEventListener('keyup', (e) => {
         const val = e.target.value.toLowerCase();
         
-        // Se a busca estiver vazia, restaura o estado normal
-        if(val === '') {
-            render();
+        // Atalho Teclado "/"
+        if(e.key === '/' && document.activeElement !== searchInput) {
+            searchInput.focus();
+            e.preventDefault();
             return;
         }
 
-        // Busca em todo o DB
+        // Se vazio, volta ao normal
+        if(val === '') {
+            if(state.page === 'search') {
+                state.page = 'inicio';
+                render();
+            }
+            return;
+        }
+
+        // Busca Global
         const allItems = Object.values(DB).flat();
         const filtered = allItems.filter(item => item.title.toLowerCase().includes(val));
 
-        // Renderiza resultado da busca manual
+        // Renderização Manual da Busca
         let html = '';
         if(filtered.length > 0) {
             html = `<div class="grid">${filtered.map(renderCard).join('')}</div>`;
@@ -300,9 +323,16 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     });
 
-    // Atalhos
+    // ATALHO "/" PARA BUSCA
     document.addEventListener('keydown', (e) => {
-        if(e.key === '\\' || e.key === 'Insert') toggleBoss();
+        if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+            e.preventDefault();
+            searchInput.focus();
+        }
+        if (e.key === '\\' || e.key === 'Insert' || e.key === 'Escape') {
+            if(bossScreen.classList.contains('active') && e.key === 'Escape') toggleBoss();
+            if(e.key === '\\' || e.key === 'Insert') toggleBoss();
+        }
     });
 
     loadDB();
