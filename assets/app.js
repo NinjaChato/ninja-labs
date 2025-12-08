@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const appContainer = document.getElementById('app-container');
+    const contentArea = document.getElementById('app-content');
+    const sidebarNav = document.getElementById('sidebar-nav');
+    const searchInput = document.getElementById('searchInput');
     const loader = document.getElementById('loader');
-    const backToTopBtn = document.getElementById('back-to-top');
     
-    // Boss Key Elements
+    // Boss Mode
     const bossScreen = document.getElementById('boss-screen');
     const exitBossBtn = document.getElementById('exit-boss');
     const bossFrame = document.getElementById('boss-frame');
@@ -12,241 +13,183 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const CONFIG = {
         bossUrl: "https://saladofuturo.educacao.sp.gov.br",
-        bossTitle: "Sala do Futuro Aluno",
+        bossTitle: "Sala do Futuro",
         bossIcon: "https://edusp-static.ip.tv/sala-do-futuro/conteudo_logo.png",
         normalTitle: "Ninja Labs",
         normalIcon: "about:blank"
     };
-    
+
     let DB = {};
     let state = {
-        currentPage: 'inicio',
+        page: 'inicio',
         favorites: JSON.parse(localStorage.getItem('ninjaFavorites')) || [],
-        activeTag: null
+        tag: null
     };
 
-    // --- TEMPLATES ---
+    // --- RENDERIZAÇÃO ---
 
-    const templates = {
-        header: () => {
-            const links = [
-                { id: 'inicio', label: 'Início', icon: 'fa-home' },
-                { id: 'pcGames', label: 'Jogos PC', icon: 'fa-desktop' },
-                { id: 'browserGames', label: 'Navegador', icon: 'fa-globe' },
-                { id: 'emulatorGames', label: 'Emulador', icon: 'fa-gamepad' },
-                { id: 'hacks', label: 'Hacks', icon: 'fa-user-secret' },
-                { id: 'favorites', label: 'Favoritos', icon: 'fa-heart' },
-                { id: 'tools', label: 'Ferramentas', icon: 'fa-wrench' }
-            ];
+    const renderSidebar = () => {
+        // MENU ORGANIZADO: Início e Favoritos no topo
+        const mainLinks = [
+            { id: 'inicio', label: 'Início', icon: 'fa-home' },
+            { id: 'favorites', label: 'Meus Favoritos', icon: 'fa-heart' }
+        ];
 
-            const navHTML = links.map(l => 
-                `<a href="#${l.id}" data-page="${l.id}" class="nav-item ${state.currentPage === l.id ? 'active' : ''}">
-                    <i class="fas ${l.icon}"></i> ${l.label}
-                </a>`
-            ).join('');
+        const catLinks = [
+            { id: 'pcGames', label: 'Jogos PC', icon: 'fa-desktop' },
+            { id: 'browserGames', label: 'Navegador', icon: 'fa-globe' },
+            { id: 'emulatorGames', label: 'Emulador', icon: 'fa-gamepad' },
+            { id: 'hacks', label: 'Hacks', icon: 'fa-user-secret' },
+            { id: 'tools', label: 'Ferramentas', icon: 'fa-wrench' }
+        ];
 
-            return `
-            <header class="site-header">
-                <div class="header-top">
-                    <div class="brand">
-                        <h1 class="site-title">NINJA<span>LABS</span></h1>
-                        <p class="site-description">Hub de Acesso Restrito</p>
-                    </div>
-                    <div class="header-actions">
-                        <button id="boss-btn" class="icon-btn boss" title="Modo Pânico (\)">
-                            <i class="fas fa-briefcase"></i>
-                        </button>
-                        <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" class="icon-btn discord" title="Discord">
-                            <i class="fab fa-discord"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="header-nav">
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar..." autocomplete="off">
-                    </div>
-                    <nav class="nav-scroll">
-                        ${navHTML}
-                    </nav>
-                </div>
-            </header>`;
-        },
+        // Função auxiliar para gerar HTML do link
+        const linkHTML = (l) => `
+            <a href="#" data-page="${l.id}" class="nav-item ${state.page === l.id ? 'active' : ''}">
+                <i class="fas ${l.icon}"></i> 
+                <span>${l.label}</span>
+            </a>`;
 
-        card: (item, index) => {
-            const isFav = state.favorites.includes(item.title);
-            const delay = Math.min(index * 50, 500); // Limit delay
+        sidebarNav.innerHTML = `
+            ${mainLinks.map(linkHTML).join('')}
+            <div class="menu-label">Categorias</div>
+            ${catLinks.map(linkHTML).join('')}
+        `;
+    };
 
-            const tagsHTML = item.tags ? 
-                `<div class="tags">${item.tags.map(t => `<span class="tag" data-tag="${t}">${t}</span>`).join('')}</div>` : '';
+    const renderCard = (item) => {
+        const isFav = state.favorites.includes(item.title);
+        
+        const tagsHTML = item.tags ? 
+            `<div class="tags">${item.tags.map(t => `<span class="tag" data-tag="${t}">${t}</span>`).join('')}</div>` : '';
 
-            let actionsHTML = '';
-            if (item.type === 'script') {
-                actionsHTML = `<button class="btn btn-primary copy-script-btn" data-script="${item.scriptContent}"><i class="fas fa-copy"></i> Copiar</button>`;
-            } else if (item.downloadLink && item.alternativeLink) {
-                actionsHTML = `
-                    <a href="${item.downloadLink}" target="_blank" class="btn btn-primary"><i class="fas fa-download"></i> Baixar</a>
-                    <a href="${item.alternativeLink}" target="_blank" class="btn btn-sec">Mirror</a>`;
-            } else {
-                let link = item.downloadLink || item.accessLink || item.gameUrl || '#';
-                if (item.rom) link = `player.html?core=${item.core}&rom=${encodeURIComponent('roms/' + item.rom)}`;
-                actionsHTML = `<a href="${link}" target="_blank" class="btn btn-primary"><i class="fas fa-play"></i> Acessar</a>`;
-            }
-
-            return `
-            <div class="card" style="animation-delay: ${delay}ms">
-                <div class="card-top">
-                    <div class="card-icon"><i class="${item.icon || 'fas fa-cube'}"></i></div>
-                    <button class="fav-btn ${isFav ? 'active' : ''}" data-title="${item.title}">
-                        <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
-                    </button>
-                </div>
-                <div class="card-content">
-                    <h3>${item.title}</h3>
-                    ${tagsHTML}
-                    <p>${item.description}</p>
-                    <div class="card-actions">${actionsHTML}</div>
-                </div>
-            </div>`;
-        },
-
-        home: () => {
-            const all = Object.values(DB).flat();
-            const featured = all.filter(i => i.featured);
-            const cards = featured.map((item, i) => templates.card(item, i)).join('');
+        let btnHTML = '';
+        if(item.type === 'script') {
+            btnHTML = `<button class="btn btn-primary copy-btn" data-val="${item.scriptContent}"><i class="fas fa-copy" style="margin-right:5px"></i> Copiar</button>`;
+        } else {
+            let link = item.downloadLink || item.gameUrl || item.accessLink || '#';
+            if(item.rom) link = `player.html?core=${item.core}&rom=${encodeURIComponent('roms/' + item.rom)}`;
             
-            return `
-            <div class="fade-in">
-                <section class="hero">
-                    <h2>Acesso direto ao <br>essencial.</h2>
-                    <p>Hub unificado para jogos, scripts e ferramentas escolares.</p>
-                    <a href="#pcGames" data-page="pcGames" class="cta-btn">Explorar <i class="fas fa-arrow-right"></i></a>
-                </section>
-                <div class="section-header">
-                    <span class="section-title">Em Destaque</span>
-                </div>
-                <div class="grid">${cards}</div>
-            </div>`;
-        },
-
-        category: (key, title) => {
-            let items = [];
-            if (key === 'favorites') {
-                const all = Object.values(DB).flat();
-                items = all.filter(i => state.favorites.includes(i.title));
-            } else {
-                items = DB[key] || [];
-            }
-
-            if (state.activeTag) {
-                items = items.filter(i => i.tags && i.tags.includes(state.activeTag));
-            }
-
-            let credits = '';
-            if (key === 'pcGames') credits = `<div class="section-credits">Fontes: <a href="https://steamrip.com" class="credit-link" target="_blank">SteamRIP</a> & <a href="#" class="credit-link">ChemicalFl00d</a></div>`;
-
-            const filterUI = state.activeTag ? 
-                `<div class="filter-bar"><div class="active-tag" id="clear-filter">Tag: ${state.activeTag} <i class="fas fa-times"></i></div></div>` : '';
-
-            if (items.length === 0) {
-                return `
-                <div class="fade-in">
-                    <div class="section-header"><span class="section-title">${title}</span></div>
-                    ${filterUI}
-                    <div class="no-results" style="display:block"><i class="fas fa-ghost"></i><p>Nada encontrado aqui.</p></div>
-                </div>`;
-            }
-
-            const cards = items.map((item, i) => templates.card(item, i)).join('');
-            return `
-            <div class="fade-in">
-                <div class="section-header">
-                    <span class="section-title">${title}</span>
-                    ${credits}
-                </div>
-                ${filterUI}
-                <div class="grid">${cards}</div>
-                <div class="no-results"><i class="fas fa-search"></i><p>Nenhum resultado.</p></div>
-            </div>`;
+            btnHTML = `<a href="${link}" target="_blank" class="btn btn-primary">Abrir</a>`;
+            if(item.alternativeLink) btnHTML += `<a href="${item.alternativeLink}" target="_blank" class="btn btn-secondary">Mirror</a>`;
         }
+
+        return `
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon"><i class="${item.icon || 'fas fa-cube'}"></i></div>
+                <button class="fav-btn ${isFav ? 'active' : ''}" data-title="${item.title}">
+                    <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                </button>
+            </div>
+            <h3>${item.title}</h3>
+            ${tagsHTML}
+            <p>${item.description}</p>
+            <div class="actions">${btnHTML}</div>
+        </div>`;
     };
 
-    // --- FUNÇÕES ---
-
-    const render = () => {
+    const renderContent = () => {
         const titles = {
-            inicio: 'Início', pcGames: 'Jogos PC', browserGames: 'Jogos Navegador',
-            emulatorGames: 'Emuladores', hacks: 'Hacks & Scripts',
-            tools: 'Ferramentas', favorites: 'Meus Favoritos'
+            inicio: 'Hub Principal', pcGames: 'Jogos de PC', browserGames: 'Web Games',
+            emulatorGames: 'Emuladores', hacks: 'Scripts & Hacks', tools: 'Ferramentas',
+            favorites: 'Seus Favoritos'
         };
 
-        const content = state.currentPage === 'inicio' 
-            ? templates.home() 
-            : templates.category(state.currentPage, titles[state.currentPage] || 'Categoria');
-
-        appContainer.innerHTML = `
-            <div class="app-wrapper">
-                ${templates.header()}
-                ${content}
-                <footer class="footer">Ninja Labs &copy; 2024</footer>
-            </div>
-        `;
-
-        // Restaura Foco e Eventos
-        const searchInput = document.getElementById('searchInput');
-        if(searchInput) {
-            searchInput.addEventListener('keyup', (e) => {
-                const term = e.target.value.toLowerCase();
-                const cards = document.querySelectorAll('.grid .card');
-                const noRes = document.querySelector('.no-results');
-                let found = false;
-                
-                cards.forEach(card => {
-                    if(card.innerText.toLowerCase().includes(term)) {
-                        card.style.display = 'flex';
-                        found = true;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-                if(noRes) noRes.style.display = found ? 'none' : 'block';
-            });
+        // HOME PAGE
+        if (state.page === 'inicio') {
+            const all = Object.values(DB).flat();
+            const featured = all.filter(i => i.featured).map(renderCard).join('');
+            
+            contentArea.innerHTML = `
+                <div class="hero">
+                    <h1>Acesso Restrito</h1>
+                    <p>Hub unificado para jogos, scripts e ferramentas escolares.</p>
+                    <a href="#" data-page="pcGames" class="btn-cta">Ver Jogos</a>
+                </div>
+                <h2 class="section-title"><i class="fas fa-fire" style="margin-right:10px; color:orange"></i> Destaques</h2>
+                <div class="grid">${featured}</div>
+            `;
+            return;
         }
+
+        // PREPARAÇÃO DE ITENS
+        let items = [];
+        if (state.page === 'favorites') {
+            const all = Object.values(DB).flat();
+            items = all.filter(i => state.favorites.includes(i.title));
+        } else {
+            items = DB[state.page] || [];
+        }
+
+        if (state.tag) {
+            items = items.filter(i => i.tags && i.tags.includes(state.tag));
+        }
+
+        const filterHTML = state.tag ? 
+            `<div class="filter-info"><div class="chip" id="clear-tag">Filtro: ${state.tag} <i class="fas fa-times"></i></div></div>` : '';
+
+        // --- EMPTY STATES (BONITINHOS) ---
+        let contentHTML = '';
+
+        if (items.length > 0) {
+            contentHTML = `<div class="grid">${items.map(renderCard).join('')}</div>`;
+        } else {
+            // Se for favoritos vazio
+            if (state.page === 'favorites') {
+                contentHTML = `
+                    <div class="empty-state">
+                        <i class="far fa-heart"></i>
+                        <h3>Você ainda não tem favoritos</h3>
+                        <p>Navegue pelas categorias e clique no coração para salvar seus itens preferidos aqui.</p>
+                        <a href="#" data-page="pcGames" class="btn-cta" style="background:#333; color:#fff; border:1px solid #444">Explorar Agora</a>
+                    </div>`;
+            } 
+            // Se for busca/tag vazia
+            else {
+                contentHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-ghost"></i>
+                        <h3>Nada encontrado</h3>
+                        <p>Não encontramos nenhum item com esse nome ou filtro. Tente buscar por outra coisa.</p>
+                    </div>`;
+            }
+        }
+
+        contentArea.innerHTML = `
+            <h2 class="section-title">${titles[state.page] || state.page}</h2>
+            ${filterHTML}
+            ${contentHTML}
+        `;
     };
 
-    // LÓGICA DE FAVORITOS OTIMIZADA (SEM RESETAR A PÁGINA)
-    const toggleFavoriteLogic = (title, btn) => {
-        const idx = state.favorites.indexOf(title);
-        
-        // Atualiza Estado
-        if (idx === -1) {
-            state.favorites.push(title);
-            // Atualiza UI Visualmente
-            if(btn) {
-                btn.classList.add('active');
-                btn.innerHTML = '<i class="fas fa-heart"></i>';
-            }
-        } else {
-            state.favorites.splice(idx, 1);
-            // Atualiza UI Visualmente
-            if(btn) {
-                btn.classList.remove('active');
-                btn.innerHTML = '<i class="far fa-heart"></i>';
-            }
-        }
-        
-        localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
+    const render = () => {
+        renderSidebar();
+        renderContent();
+    };
 
-        // Só recarrega tudo se estivermos na página de favoritos (para remover o card)
-        if (state.currentPage === 'favorites') {
+    // --- LÓGICA ---
+
+    const loadDB = async () => {
+        try {
+            const res = await fetch(`data/db.json?v=${Date.now()}`);
+            DB = await res.json();
+            
+            const hash = window.location.hash.slice(1);
+            if(hash && DB[hash] || hash === 'favorites') state.page = hash;
+
             render();
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        } catch (e) {
+            console.error(e);
+            loader.innerHTML = '<p style="color:red">Erro ao carregar dados.</p>';
         }
     };
 
     const toggleBoss = () => {
-        const isActive = bossScreen.classList.contains('active');
-        if (!isActive) {
+        const active = bossScreen.classList.contains('active');
+        if(!active) {
             if(!bossFrame.src) bossFrame.src = CONFIG.bossUrl;
             bossScreen.classList.add('active');
             document.title = CONFIG.bossTitle;
@@ -258,84 +201,109 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- INIT ---
+    // --- EVENTOS ---
 
-    const init = async () => {
-        try {
-            const res = await fetch(`data/db.json?t=${new Date().getTime()}`);
-            if (!res.ok) throw new Error("DB Error");
-            DB = await res.json();
-            
-            const hash = window.location.hash.slice(1);
-            if (hash && ['pcGames','browserGames','hacks','tools','favorites'].includes(hash)) {
-                state.currentPage = hash;
-            }
-
+    document.addEventListener('click', (e) => {
+        // Nav Links
+        const nav = e.target.closest('[data-page]');
+        if(nav) {
+            e.preventDefault();
+            state.page = nav.dataset.page;
+            state.tag = null;
             render();
-            
-            setTimeout(() => {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 400);
-            }, 500);
-
-        } catch (err) {
-            console.error(err);
-            loader.innerHTML = `<div class="loader-content"><p style="color:#ff4757">Erro ao carregar sistema.</p></div>`;
+            // Em mobile, scroll para o topo do conteúdo, não da página
+            const contentDiv = document.querySelector('.content-area');
+            if(contentDiv) contentDiv.scrollTop = 0;
         }
 
-        // Event Delegation Global
-        document.addEventListener('click', (e) => {
-            // Navegação
-            const nav = e.target.closest('[data-page]');
-            if (nav) {
-                e.preventDefault();
-                state.currentPage = nav.dataset.page;
-                state.activeTag = null;
-                render();
-                window.scrollTo(0,0);
+        // Tags
+        const tag = e.target.closest('[data-tag]');
+        if(tag) {
+            state.tag = tag.dataset.tag;
+            render();
+        }
+        if(e.target.closest('#clear-tag')) {
+            state.tag = null;
+            render();
+        }
+
+        // Favoritar
+        const fav = e.target.closest('.fav-btn');
+        if(fav) {
+            const title = fav.dataset.title;
+            const idx = state.favorites.indexOf(title);
+            
+            if(idx === -1) {
+                state.favorites.push(title);
+                fav.classList.add('active');
+                fav.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                state.favorites.splice(idx, 1);
+                fav.classList.remove('active');
+                fav.innerHTML = '<i class="far fa-heart"></i>';
             }
-
-            // Tags
-            const tag = e.target.closest('[data-tag]');
-            if (tag) {
-                state.activeTag = tag.dataset.tag;
-                render();
+            localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
+            
+            // Remove visualmente se estiver na tela de favoritos
+            if(state.page === 'favorites') {
+                const card = fav.closest('.card');
+                if(card) {
+                    card.style.opacity = '0';
+                    setTimeout(() => render(), 300); // Re-renderiza para mostrar o empty state se esvaziar
+                }
             }
-            if (e.target.closest('#clear-filter')) {
-                state.activeTag = null;
-                render();
-            }
+        }
 
-            // Favorito (Passamos o botão para a função)
-            const fav = e.target.closest('.fav-btn');
-            if (fav) {
-                toggleFavoriteLogic(fav.dataset.title, fav);
-            }
+        // Copiar
+        const copy = e.target.closest('.copy-btn');
+        if(copy) {
+            navigator.clipboard.writeText(copy.dataset.val);
+            const old = copy.innerHTML;
+            copy.innerHTML = "Copiado!";
+            setTimeout(()=> copy.innerHTML = old, 2000);
+        }
 
-            // Copiar
-            const copy = e.target.closest('.copy-script-btn');
-            if (copy) {
-                navigator.clipboard.writeText(copy.dataset.script);
-                const original = copy.innerHTML;
-                copy.innerHTML = `<i class="fas fa-check"></i> Copiado!`;
-                setTimeout(() => copy.innerHTML = original, 2000);
-            }
+        // Boss
+        if(e.target.closest('#boss-btn') || e.target.closest('#exit-boss')) toggleBoss();
+    });
 
-            if (e.target.closest('#boss-btn')) toggleBoss();
-        });
+    // Busca
+    searchInput.addEventListener('keyup', (e) => {
+        const val = e.target.value.toLowerCase();
+        
+        // Se a busca estiver vazia, restaura o estado normal
+        if(val === '') {
+            render();
+            return;
+        }
 
-        exitBossBtn.addEventListener('click', toggleBoss);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '\\' || e.key === 'Insert') toggleBoss();
-        });
+        // Busca em todo o DB
+        const allItems = Object.values(DB).flat();
+        const filtered = allItems.filter(item => item.title.toLowerCase().includes(val));
 
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) backToTopBtn.classList.add('visible');
-            else backToTopBtn.classList.remove('visible');
-        });
+        // Renderiza resultado da busca manual
+        let html = '';
+        if(filtered.length > 0) {
+            html = `<div class="grid">${filtered.map(renderCard).join('')}</div>`;
+        } else {
+            html = `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>Nenhum resultado</h3>
+                    <p>Não encontramos nada com "${val}".</p>
+                </div>`;
+        }
 
-        backToTopBtn.addEventListener('click', () => window.scrollTo(0,0));
-    };
+        contentArea.innerHTML = `
+            <h2 class="section-title">Resultados da Busca</h2>
+            ${html}
+        `;
+    });
 
-    init();
+    // Atalhos
+    document.addEventListener('keydown', (e) => {
+        if(e.key === '\\' || e.key === 'Insert') toggleBoss();
+    });
+
+    loadDB();
 });
