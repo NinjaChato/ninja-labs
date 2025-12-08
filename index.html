@@ -4,28 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
+    <meta name="description" content="Ninja Labs Access">
     <title>Ninja Labs</title>
     
     <link id="site-favicon" rel="shortcut icon" href="about:blank">
 
+    <!-- FONTES PREMIUM -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
     
+    <!-- LOADER INICIAL -->
     <div id="loader">
-        <div class="loader-logo">NINJA<span>LABS</span></div>
-        <div class="loader-bar"></div>
+        <div class="loader-content">
+            <div class="ninja-icon"><i class="fas fa-shuriken fa-spin"></i></div>
+            <div class="loader-text">INICIALIZANDO SISTEMA...</div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
     </div>
     
+    <!-- ESTRUTURA PRINCIPAL -->
     <div class="layout">
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo">
-                <div class="logo-icon"><i class="fas fa-shuriken"></i></div>
+                <div class="logo-symbol"><i class="fas fa-bolt"></i></div>
                 <div class="logo-text">NINJA<span>LABS</span></div>
             </div>
             
@@ -41,16 +49,19 @@
             </div>
         </aside>
 
+        <!-- CONTEÚDO -->
         <main class="main-content">
             <header class="top-bar">
-                <div class="search-box">
+                <div class="search-wrapper">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" placeholder="Pesquisar (Aperte /)" autocomplete="off">
+                    <input type="text" id="searchInput" placeholder="Pesquisar..." autocomplete="off">
+                    <kbd class="shortcut-hint">/</kbd>
                 </div>
             </header>
 
             <div id="app-content" class="content-area">
-                <div id="skeleton-container" class="grid" style="display:none;">
+                <!-- SKELETON LOADING (Placeholder) -->
+                <div id="skeleton-loader" class="grid">
                     <div class="skeleton-card"></div>
                     <div class="skeleton-card"></div>
                     <div class="skeleton-card"></div>
@@ -59,16 +70,24 @@
             </div>
             
             <footer>
-                <p>Ninja Labs © 2024 &bull; Acesso Restrito</p>
+                <p>Ninja Labs v2.0 &bull; Acesso Restrito</p>
             </footer>
         </main>
     </div>
 
+    <!-- BOSS KEY (CORRIGIDO) -->
     <div id="boss-screen" class="boss-screen">
+        <!-- Loader falso para realismo -->
+        <div id="boss-loader" class="boss-loader">
+            <div class="spinner-school"></div>
+            <p>Carregando CMSP...</p>
+        </div>
         <iframe id="boss-frame" src="" frameborder="0" allowfullscreen></iframe>
-        <div id="boss-overlay-exit" title="Clique para Sair"></div>
+        <!-- Botão invisível de saída (Canto Superior Direito) -->
+        <div id="boss-exit-zone" title="Clique para Sair"></div>
     </div>
 
+    <!-- NOTIFICAÇÕES -->
     <div id="toast-container"></div>
 
     <script src="assets/app.js"></script>
