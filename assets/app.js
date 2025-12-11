@@ -3,12 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentArea = document.getElementById('app-content');
     const sidebarNav = document.getElementById('sidebar-nav');
     const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearch');
     const loader = document.getElementById('loader');
+    const loaderText = document.getElementById('loader-text');
     const toastContainer = document.getElementById('toast-container');
     
     // Boss Mode
     const bossScreen = document.getElementById('boss-screen');
-    const bossExit = document.getElementById('boss-exit-trigger');
+    const bossExit = document.getElementById('boss-exit-visible');
     const bossFrame = document.getElementById('boss-frame');
     const favicon = document.getElementById('site-favicon');
 
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bossUrl: "https://saladofuturo.educacao.sp.gov.br",
         bossTitle: "Sala do Futuro",
         bossIcon: "https://edusp-static.ip.tv/sala-do-futuro/conteudo_logo.png",
-        normalTitle: "NINJA LABS // ACCESS",
+        normalTitle: "NINJA LABS // ACESSO",
         normalIcon: "about:blank"
     };
 
@@ -27,8 +29,40 @@ document.addEventListener('DOMContentLoaded', () => {
         tag: null
     };
 
-    // --- SPOTLIGHT EFFECT LOGIC ---
-    // Faz o brilho seguir o mouse nos cards
+    // --- LOADER EFFECT ---
+    // Simula decodificação de texto
+    const decodeText = (target, text) => {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let iterations = 0;
+        const interval = setInterval(() => {
+            target.innerText = text.split("").map((letter, index) => {
+                if(index < iterations) return text[index];
+                return chars[Math.floor(Math.random() * 36)];
+            }).join("");
+            if(iterations >= text.length) clearInterval(interval);
+            iterations += 1/3;
+        }, 30);
+    };
+
+    // --- RIPPLE EFFECT ---
+    const createRipple = (event) => {
+        const button = event.currentTarget;
+        const circle = document.createElement("span");
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+        circle.classList.add("ripple-effect");
+
+        const ripple = button.getElementsByClassName("ripple-effect")[0];
+        if (ripple) ripple.remove();
+
+        button.appendChild(circle);
+    };
+
+    // --- SPOTLIGHT EFFECT ---
     const initSpotlight = () => {
         const cards = document.querySelectorAll('.spotlight-card');
         cards.forEach(card => {
@@ -58,34 +92,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- RENDER ---
     const renderSidebar = () => {
         const menuHTML = `
-            <div class="menu-category">MAIN</div>
-            <a href="#" data-page="inicio" class="nav-item ${state.page === 'inicio' ? 'active' : ''}">
+            <div class="menu-category">PRINCIPAL</div>
+            <a href="#" data-page="inicio" class="nav-item ripple ${state.page === 'inicio' ? 'active' : ''}">
                 <i class="fas fa-home"></i> <span>Início</span>
             </a>
-            <a href="#" data-page="favorites" class="nav-item ${state.page === 'favorites' ? 'active' : ''}">
+            <a href="#" data-page="favorites" class="nav-item ripple ${state.page === 'favorites' ? 'active' : ''}">
                 <i class="fas fa-heart"></i> <span>Favoritos</span>
             </a>
             
-            <div class="menu-category">DATABASE</div>
-            <a href="#" data-page="pcGames" class="nav-item ${state.page === 'pcGames' ? 'active' : ''}">
+            <div class="menu-category">BANCO DE DADOS</div>
+            <a href="#" data-page="pcGames" class="nav-item ripple ${state.page === 'pcGames' ? 'active' : ''}">
                 <i class="fas fa-desktop"></i> <span>Jogos PC</span>
             </a>
-            <a href="#" data-page="browserGames" class="nav-item ${state.page === 'browserGames' ? 'active' : ''}">
+            <a href="#" data-page="browserGames" class="nav-item ripple ${state.page === 'browserGames' ? 'active' : ''}">
                 <i class="fas fa-globe"></i> <span>Web Games</span>
             </a>
-            <a href="#" data-page="emulatorGames" class="nav-item ${state.page === 'emulatorGames' ? 'active' : ''}">
+            <a href="#" data-page="emulatorGames" class="nav-item ripple ${state.page === 'emulatorGames' ? 'active' : ''}">
                 <i class="fas fa-gamepad"></i> <span>Emuladores</span>
             </a>
             
-            <div class="menu-category">TOOLS</div>
-            <a href="#" data-page="hacks" class="nav-item ${state.page === 'hacks' ? 'active' : ''}">
+            <div class="menu-category">UTILITÁRIOS</div>
+            <a href="#" data-page="hacks" class="nav-item ripple ${state.page === 'hacks' ? 'active' : ''}">
                 <i class="fas fa-code"></i> <span>Scripts</span>
             </a>
-            <a href="#" data-page="tools" class="nav-item ${state.page === 'tools' ? 'active' : ''}">
+            <a href="#" data-page="tools" class="nav-item ripple ${state.page === 'tools' ? 'active' : ''}">
                 <i class="fas fa-toolbox"></i> <span>Ferramentas</span>
             </a>
         `;
         sidebarNav.innerHTML = menuHTML;
+        
+        // Re-attach ripple events
+        document.querySelectorAll('.ripple').forEach(btn => btn.addEventListener('click', createRipple));
     };
 
     const renderCard = (item, index) => {
@@ -95,12 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let btn = '';
         if(item.type === 'script') {
-            btn = `<button class="action-btn btn-solid copy-btn" data-val="${item.scriptContent}"><i class="fas fa-copy"></i> Copiar</button>`;
+            btn = `<button class="action-btn btn-solid copy-btn ripple" data-val="${item.scriptContent}"><i class="fas fa-copy"></i> COPIAR</button>`;
         } else {
             let link = item.downloadLink || item.gameUrl || item.accessLink || '#';
             if(item.rom) link = `player.html?core=${item.core}&rom=${encodeURIComponent('roms/' + item.rom)}`;
-            btn = `<a href="${link}" target="_blank" class="action-btn btn-solid">ABRIR</a>`;
-            if(item.alternativeLink) btn += `<a href="${item.alternativeLink}" target="_blank" class="action-btn btn-outline">MIRROR</a>`;
+            btn = `<a href="${link}" target="_blank" class="action-btn btn-solid ripple">ACESSAR</a>`;
+            if(item.alternativeLink) btn += `<a href="${item.alternativeLink}" target="_blank" class="action-btn btn-outline ripple">MIRROR</a>`;
         }
 
         return `
@@ -121,23 +158,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderContent = () => {
-        const titles = { inicio: 'DASHBOARD', favorites: 'FAVORITES', pcGames: 'PC GAMES', browserGames: 'WEB GAMES', emulatorGames: 'EMULATION', hacks: 'SCRIPTS', tools: 'TOOLS' };
+        const titles = { 
+            inicio: 'DASHBOARD', favorites: 'FAVORITOS', pcGames: 'JOGOS PC', 
+            browserGames: 'WEB GAMES', emulatorGames: 'EMULAÇÃO', hacks: 'SCRIPTS', tools: 'FERRAMENTAS' 
+        };
         
-        // HOME PAGE CINEMATOGRÁFICA
+        // HOME PAGE
         if (state.page === 'inicio') {
             const all = Object.values(DB).flat();
             const featured = all.filter(i => i.featured).map(renderCard).join('');
             
             contentArea.innerHTML = `
-                <div class="hero-wrapper fade-in-up">
+                <div class="hero-wrapper">
                     <div class="hero-content">
-                        <h1 class="hero-title">BEM-VINDO AO HUB</h1>
-                        <p class="hero-subtitle">Plataforma centralizada de acesso restrito. Jogos, ferramentas e automação educacional sem bloqueios.</p>
-                        <a href="#" data-page="pcGames" class="hero-btn">EXPLORAR SISTEMA</a>
+                        <h1 class="hero-title">ACESSO RESTRITO</h1>
+                        <p class="hero-subtitle">Plataforma centralizada. Jogos desbloqueados, automação e ferramentas sem restrições.</p>
+                        <a href="#" data-page="pcGames" class="hero-btn ripple">EXPLORAR SISTEMA</a>
                     </div>
                 </div>
                 <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-star" style="color:var(--accent-cyan); font-size:1.2rem"></i> FEATURED</h2>
+                    <h2 class="section-title"><i class="fas fa-star" style="color:var(--accent-cyan); font-size:1.2rem"></i> DESTAQUES</h2>
                 </div>
                 <div class="grid">${featured}</div>
             `;
@@ -156,14 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (state.tag) items = items.filter(i => i.tags && i.tags.includes(state.tag));
 
-        const filterHTML = state.tag ? `<div class="filter-info"><div class="chip" id="clear-tag">FILTER: ${state.tag} <i class="fas fa-times"></i></div></div>` : '';
+        const filterHTML = state.tag ? `<div class="filter-info"><div class="chip" id="clear-tag">FILTRO: ${state.tag} <i class="fas fa-times"></i></div></div>` : '';
 
         let contentHTML = '';
         if (items.length > 0) {
             contentHTML = `<div class="grid">${items.map(renderCard).join('')}</div>`;
         } else {
             const msg = state.page === 'favorites' ? 'Nenhum item salvo.' : 'Nada encontrado.';
-            contentHTML = `<div class="empty-state"><i class="fas fa-ghost"></i><h3>VOID</h3><p>${msg}</p></div>`;
+            contentHTML = `<div class="empty-state"><i class="fas fa-ghost"></i><h3>VAZIO</h3><p>${msg}</p></div>`;
         }
 
         contentArea.innerHTML = `
@@ -184,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- SYSTEM INIT ---
     const loadDB = async () => {
         try {
+            decodeText(loaderText, "CARREGANDO SISTEMA...");
             const res = await fetch(`data/db.json?v=${Date.now()}`);
             if(!res.ok) throw new Error("Connection Refused");
             DB = await res.json();
@@ -192,14 +233,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if(hash && (DB[hash] || hash === 'favorites')) state.page = hash;
 
             render();
-            // Efeito de fade out do loader
+            
+            // Loader Out
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => loader.style.display = 'none', 800);
-            }, 1500); // Demora um pouco mais para apreciar o glitch effect
+            }, 1000); 
         } catch (e) {
             console.error(e);
-            loader.innerHTML = '<div style="color:red; font-family:monospace">SYSTEM FAILURE: DATABASE_CONNECT_ERROR</div>';
+            loader.innerHTML = '<div style="color:red; font-family:monospace">FALHA CRÍTICA: ERRO NO BANCO DE DADOS</div>';
         }
     };
 
@@ -208,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!active) {
             if(!bossFrame.src || bossFrame.src === 'about:blank') {
                 bossFrame.src = CONFIG.bossUrl;
-                bossFrame.onload = () => bossFrame.classList.add('loaded'); // Fade in quando carregar
+                bossFrame.onload = () => bossFrame.classList.add('loaded'); 
             }
             bossScreen.classList.add('active');
             document.title = CONFIG.bossTitle;
@@ -220,8 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- INPUTS ---
+    // --- LISTENERS ---
     document.addEventListener('click', (e) => {
+        // NAV
         const nav = e.target.closest('[data-page]');
         if(nav) {
             e.preventDefault();
@@ -229,12 +272,15 @@ document.addEventListener('DOMContentLoaded', () => {
             state.tag = null;
             render();
             contentArea.scrollTop = 0;
+            createRipple(e);
         }
 
+        // TAGS
         const tag = e.target.closest('[data-tag]');
         if(tag) { state.tag = tag.dataset.tag; render(); }
         if(e.target.closest('#clear-tag')) { state.tag = null; render(); }
 
+        // FAVORITAR
         const fav = e.target.closest('.fav-btn');
         if(fav) {
             const title = fav.dataset.title;
@@ -243,12 +289,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.favorites.push(title);
                 fav.classList.add('active');
                 fav.innerHTML = '<i class="fas fa-heart"></i>';
-                showToast('Saved to Database');
+                showToast('Salvo nos Favoritos');
             } else {
                 state.favorites.splice(idx, 1);
                 fav.classList.remove('active');
                 fav.innerHTML = '<i class="far fa-heart"></i>';
-                showToast('Removed', 'trash');
+                showToast('Removido dos Favoritos', 'trash');
             }
             localStorage.setItem('ninjaFavorites', JSON.stringify(state.favorites));
             if(state.page === 'favorites') {
@@ -257,24 +303,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // COPIAR
         const copy = e.target.closest('.copy-btn');
         if(copy) {
+            createRipple(e);
             navigator.clipboard.writeText(copy.dataset.val);
-            showToast('Code Copied to Clipboard');
+            showToast('Código copiado!');
         }
 
-        if(e.target.closest('#boss-btn') || e.target.closest('#boss-exit-trigger')) toggleBoss();
+        // LOGO HOME
+        if(e.target.closest('#go-home-btn')) {
+            state.page = 'inicio';
+            render();
+        }
+
+        // BOSS
+        if(e.target.closest('#boss-btn') || e.target.closest('#boss-exit-visible')) toggleBoss();
+        
+        // SEARCH CLEAR
+        if(e.target.closest('#clearSearch')) {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            if(state.page === 'search') { state.page = 'inicio'; render(); }
+            searchInput.focus();
+        }
     });
 
     searchInput.addEventListener('keyup', (e) => {
         const val = e.target.value.toLowerCase();
+        
+        // Botão X toggle
+        clearBtn.style.display = val.length > 0 ? 'block' : 'none';
+
         if(e.key === '/' && document.activeElement !== searchInput) { searchInput.focus(); e.preventDefault(); return; }
         if(val === '') { if(state.page === 'search') { state.page = 'inicio'; render(); } return; }
 
         const all = Object.values(DB).flat();
         const filtered = all.filter(i => i.title.toLowerCase().includes(val));
-        const html = filtered.length ? `<div class="grid">${filtered.map(renderCard).join('')}</div>` : `<div class="empty-state"><i class="fas fa-search"></i><h3>NO_DATA</h3></div>`;
-        contentArea.innerHTML = `<div class="section-header"><h2 class="section-title">SEARCH: "${val}"</h2></div>${html}`;
+        const html = filtered.length ? `<div class="grid">${filtered.map(renderCard).join('')}</div>` : `<div class="empty-state"><i class="fas fa-search"></i><h3>NADA ENCONTRADO</h3></div>`;
+        contentArea.innerHTML = `<div class="section-header"><h2 class="section-title">BUSCA: "${val}"</h2></div>${html}`;
         initSpotlight();
     });
 
