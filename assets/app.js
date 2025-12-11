@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentArea = document.getElementById('app-content');
     const sidebarNav = document.getElementById('sidebar-nav');
     const searchInput = document.getElementById('searchInput');
-    const clearBtn = document.getElementById('clearSearch');
+    const searchClear = document.getElementById('searchClear'); // Botão X
     const loader = document.getElementById('loader');
     const loaderText = document.getElementById('loader-text');
     const toastContainer = document.getElementById('toast-container');
@@ -29,8 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tag: null
     };
 
-    // --- LOADER EFFECT ---
-    // Simula decodificação de texto
+    // --- UTILS ---
     const decodeText = (target, text) => {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let iterations = 0;
@@ -44,25 +43,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 30);
     };
 
-    // --- RIPPLE EFFECT ---
     const createRipple = (event) => {
         const button = event.currentTarget;
         const circle = document.createElement("span");
         const diameter = Math.max(button.clientWidth, button.clientHeight);
         const radius = diameter / 2;
-
         circle.style.width = circle.style.height = `${diameter}px`;
         circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
         circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
         circle.classList.add("ripple-effect");
-
         const ripple = button.getElementsByClassName("ripple-effect")[0];
         if (ripple) ripple.remove();
-
         button.appendChild(circle);
     };
 
-    // --- SPOTLIGHT EFFECT ---
     const initSpotlight = () => {
         const cards = document.querySelectorAll('.spotlight-card');
         cards.forEach(card => {
@@ -76,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- TOAST ---
     const showToast = (msg, icon = 'check-circle') => {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -120,8 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
         `;
         sidebarNav.innerHTML = menuHTML;
-        
-        // Re-attach ripple events
         document.querySelectorAll('.ripple').forEach(btn => btn.addEventListener('click', createRipple));
     };
 
@@ -169,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const featured = all.filter(i => i.featured).map(renderCard).join('');
             
             contentArea.innerHTML = `
-                <div class="hero-wrapper">
+                <div class="hero-wrapper fade-in-up">
                     <div class="hero-content">
                         <h1 class="hero-title">ACESSO RESTRITO</h1>
                         <p class="hero-subtitle">Plataforma centralizada. Jogos desbloqueados, automação e ferramentas sem restrições.</p>
@@ -196,21 +187,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (state.tag) items = items.filter(i => i.tags && i.tags.includes(state.tag));
 
-        const filterHTML = state.tag ? `<div class="filter-info"><div class="chip" id="clear-tag">FILTRO: ${state.tag} <i class="fas fa-times"></i></div></div>` : '';
+        // BADGE DE FILTRO INTEGRADA
+        let headerExtra = '';
+        if (state.tag) {
+            headerExtra = `
+                <div class="filter-badge">
+                    ${state.tag}
+                    <button class="filter-clear-btn" id="clear-tag" title="Remover filtro"><i class="fas fa-times"></i></button>
+                </div>
+            `;
+        }
 
         let contentHTML = '';
         if (items.length > 0) {
             contentHTML = `<div class="grid">${items.map(renderCard).join('')}</div>`;
         } else {
-            const msg = state.page === 'favorites' ? 'Nenhum item salvo.' : 'Nada encontrado.';
-            contentHTML = `<div class="empty-state"><i class="fas fa-ghost"></i><h3>VAZIO</h3><p>${msg}</p></div>`;
+            if (state.page === 'favorites') {
+                contentHTML = `
+                    <div class="empty-state">
+                        <i class="far fa-heart"></i>
+                        <h3>SEM FAVORITOS</h3>
+                        <p>Salve itens aqui para acesso rápido.</p>
+                        <a href="#" data-page="pcGames" class="hero-btn ripple" style="padding:10px 20px; font-size:0.9rem">EXPLORAR</a>
+                    </div>`;
+            } else {
+                contentHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-ghost"></i>
+                        <h3>VAZIO</h3>
+                        <p>Nenhum item encontrado com este filtro.</p>
+                        ${state.tag ? `<button class="hero-btn ripple" id="clear-tag-btn" style="padding:10px 20px; font-size:0.9rem; background:#333; color:#fff">LIMPAR FILTROS</button>` : ''}
+                    </div>`;
+            }
         }
 
         contentArea.innerHTML = `
             <div class="section-header">
                 <h2 class="section-title">${titles[state.page] || state.page}</h2>
+                ${headerExtra}
             </div>
-            ${filterHTML}
             ${contentHTML}
         `;
         initSpotlight();
@@ -233,8 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if(hash && (DB[hash] || hash === 'favorites')) state.page = hash;
 
             render();
-            
-            // Loader Out
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => loader.style.display = 'none', 800);
@@ -264,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LISTENERS ---
     document.addEventListener('click', (e) => {
-        // NAV
         const nav = e.target.closest('[data-page]');
         if(nav) {
             e.preventDefault();
@@ -275,12 +287,11 @@ document.addEventListener('DOMContentLoaded', () => {
             createRipple(e);
         }
 
-        // TAGS
         const tag = e.target.closest('[data-tag]');
         if(tag) { state.tag = tag.dataset.tag; render(); }
-        if(e.target.closest('#clear-tag')) { state.tag = null; render(); }
+        
+        if(e.target.closest('#clear-tag') || e.target.closest('#clear-tag-btn')) { state.tag = null; render(); }
 
-        // FAVORITAR
         const fav = e.target.closest('.fav-btn');
         if(fav) {
             const title = fav.dataset.title;
@@ -303,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // COPIAR
         const copy = e.target.closest('.copy-btn');
         if(copy) {
             createRipple(e);
@@ -311,19 +321,13 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Código copiado!');
         }
 
-        // LOGO HOME
-        if(e.target.closest('#go-home-btn')) {
-            state.page = 'inicio';
-            render();
-        }
-
-        // BOSS
+        if(e.target.closest('#go-home-btn')) { state.page = 'inicio'; render(); }
         if(e.target.closest('#boss-btn') || e.target.closest('#boss-exit-visible')) toggleBoss();
         
-        // SEARCH CLEAR
-        if(e.target.closest('#clearSearch')) {
+        // Limpar Busca
+        if(e.target.closest('#searchClear')) {
             searchInput.value = '';
-            clearBtn.style.display = 'none';
+            searchClear.classList.remove('visible');
             if(state.page === 'search') { state.page = 'inicio'; render(); }
             searchInput.focus();
         }
@@ -332,8 +336,9 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('keyup', (e) => {
         const val = e.target.value.toLowerCase();
         
-        // Botão X toggle
-        clearBtn.style.display = val.length > 0 ? 'block' : 'none';
+        // Toggle botão X
+        if(val.length > 0) searchClear.classList.add('visible');
+        else searchClear.classList.remove('visible');
 
         if(e.key === '/' && document.activeElement !== searchInput) { searchInput.focus(); e.preventDefault(); return; }
         if(val === '') { if(state.page === 'search') { state.page = 'inicio'; render(); } return; }
@@ -341,6 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const all = Object.values(DB).flat();
         const filtered = all.filter(i => i.title.toLowerCase().includes(val));
         const html = filtered.length ? `<div class="grid">${filtered.map(renderCard).join('')}</div>` : `<div class="empty-state"><i class="fas fa-search"></i><h3>NADA ENCONTRADO</h3></div>`;
+        
+        // Renderiza resultado manual
         contentArea.innerHTML = `<div class="section-header"><h2 class="section-title">BUSCA: "${val}"</h2></div>${html}`;
         initSpotlight();
     });
