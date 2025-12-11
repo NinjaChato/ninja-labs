@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#020203">
     <meta name="description" content="Ninja Labs - Acesso Restrito">
-    <title>NINJA LABS // ACESSO</title>
+    <title>NINJA LABS // SYSTEM</title>
     
     <link id="site-favicon" rel="shortcut icon" href="about:blank">
 
-    <!-- FONTES -->
+    <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
 </head>
 <body>
     
-    <!-- CAMADAS DE EFEITO -->
+    <!-- VFX -->
     <div class="vfx-ambient"></div>
     <div class="vfx-noise"></div>
 
@@ -32,14 +32,14 @@
             <div class="loader-bar-wrap">
                 <div class="loader-bar"></div>
             </div>
-            <div class="loader-status" id="loader-text">INICIALIZANDO SISTEMA...</div>
+            <div class="loader-status" id="loader-text">CARREGANDO SISTEMA...</div>
         </div>
     </div>
     
     <div class="layout">
         <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="brand-container" id="go-home-btn" title="Voltar ao Início">
+            <div class="brand-container" id="go-home-btn" title="Resetar Interface">
                 <div class="logo-box">
                     <i class="fas fa-biohazard"></i>
                 </div>
@@ -53,46 +53,51 @@
 
             <div class="sidebar-footer">
                 <div class="connection-status">
-                    <span class="status-dot"></span> SEGURO // ONLINE
+                    <span class="status-dot"></span> <span id="status-text">CONECTADO</span>
                 </div>
                 <div class="footer-actions">
                     <button id="boss-btn" class="icon-btn ripple" title="Modo Pânico (\)">
                         <i class="fas fa-eye-slash"></i>
                     </button>
-                    <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" class="icon-btn discord ripple" title="Discord">
+                    <a href="https://discord.gg/ATS3E9ZeR7" target="_blank" class="icon-btn discord ripple" title="Comunidade">
                         <i class="fab fa-discord"></i>
                     </a>
                 </div>
             </div>
         </aside>
 
-        <!-- CONTEÚDO -->
+        <!-- MAIN -->
         <main class="main-content">
             <header class="top-bar">
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" placeholder="Pesquisar no banco de dados..." autocomplete="off">
-                    <button id="clearSearch" class="clear-btn"><i class="fas fa-times"></i></button>
+                    <input type="text" id="searchInput" placeholder="Pesquisar comando, jogo ou script..." autocomplete="off">
+                    
+                    <!-- Botão X Limpo -->
+                    <button id="searchClear" class="search-clear" title="Limpar busca">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
                     <div class="kbd-shortcut">/</div>
                 </div>
             </header>
 
             <div id="app-content" class="content-area">
-                <!-- Conteúdo Injetado via JS -->
+                <!-- Conteúdo Dinâmico -->
             </div>
         </main>
     </div>
 
-    <!-- BOSS MODE -->
+    <!-- BOSS SCREEN -->
     <div id="boss-screen" class="boss-screen">
         <div class="boss-overlay-ui">
             <div class="spinner-fake"></div>
-            <p>Carregando CMSP...</p>
+            <p>Conectando ao CMSP...</p>
         </div>
         <iframe id="boss-frame" src="about:blank" frameborder="0" allowfullscreen></iframe>
         
         <button id="boss-exit-visible" class="ripple">
-            <i class="fas fa-sign-out-alt"></i> SAIR DA SALA
+            <i class="fas fa-sign-out-alt"></i> SAIR DA AULA
         </button>
     </div>
 
